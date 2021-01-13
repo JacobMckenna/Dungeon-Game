@@ -19,51 +19,33 @@ global current_level
 # Set up the drawing window
 screen = pygame.display.set_mode([800, 600])
 
-m,v = 1,5
-
-def jump(player_number):
-    global m,v
-    
-    while True:
-        # calculate force (F). F = 1 / 2 * mass * velocity ^ 2. 
-        F = ((1 / 2)*m*(v**2))*2
-            
-        # change in the y co-ordinate 
-        if player_number == 0:
-            Player0.y -= F
-            
-        # decreasing velocity while going up and become negative while coming down 
-        v = v-1
-            
-        # object reached its maximum height 
-        if v<0: 
-            # negative sign is added to counter negative velocity 
-            m =-1
-
-        # objected reaches its original state
-        if v == -6:
-            m,v = 1,5
-            main(False)
-        else:
-            main(True)
-
-
 def check_events():
+
+    #keys are w,a,d,up,left,right
+    key_list = [False,False,False,False,False,False]
+
     #check all events that happened in this frame
     for event in pygame.event.get():
-        #pressed = pygame.key.get_pressed()
-        #if pressed[pygame.K_w]:
-        #    Player0.y = Player0.y + 1
+        #Get all the pressed keys
+        pressed = pygame.key.get_pressed()
+
+        if pressed[pygame.K_a]: #if pressing a
+            key_list[1] = True
+        if pressed[pygame.K_d]: #if pressing d
+            key_list[2] = True
 
         # Is there a key pressed down?
+        # The difference between this and using pressed[] is this only gives an output once
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w: #if pressing w
                 #make the player jump
-                jump(0)
+                key_list[0] = True
         
         # Did the user click the window close button?
         if event.type == pygame.QUIT:
             pygame.quit()
+        
+    return key_list
 
 
 class Sprite:
@@ -73,23 +55,92 @@ class Sprite:
         self.w = w
         self.h = h
 
-Player0 = Sprite(100, 100, 100, 100)
+def main():
+    Player0 = Sprite(100, 100, 100, 100)
+    Player1 = Sprite(300, 0, 100, 100)
 
-Players = [Player0]
+    Players = [Player0,Player1]
 
-def main(jumping):
+    m0,v0, = 1,10
+    m1,v1 = 1,10
+
+    isJump0,isJump1 = False,False
+
     # Run until the user asks to quit
     while True:
 
         screen.fill((0,0,0))
 
         #check for any events this frame
-        check_events()
+        keys = check_events()
 
-        #display_level(testing_level,screen)
+        print(keys[0],keys[1])
 
-        if jumping:
-            jump(0)
+        if keys[1] == True: #if pressing a
+            Player0.x = Player0.x - 5 #change 5 to change speed
+        elif keys[2] == True: #if pressing d
+            Player0.x = Player0.x + 5 #change 5 to change speed
+        
+        ###########
+        # JUMPING #
+        ###########
+
+        if keys[0] == True:
+            isJump0 = True
+        
+        if keys[3] == True:
+            isJump1 = True
+
+        #if player0 is jumping
+        if isJump0 == True:
+            # calculate force (F). F = 1 / 2 * mass * velocity ^ 2. 
+            F0 = (1 / 2)*m0*(v0**2)
+                
+            # change the y value
+            Player0.y -= F0
+                
+            # constantly reduce velocity
+            v0 = v0-1 #chage 0.5 lower values to get longer jump
+                
+            # object reached its maximum height 
+            if v0<0: 
+                # negative sign is added to counter negative velocity 
+                m0 =-1
+
+            # object is where is began
+            if v0 == -11:
+                m0,v0 = 1,10
+                isJump0 = False
+        
+        #if player 1 is jumping
+        if isJump1 == True:
+            # calculate force (F). F = 1 / 2 * mass * velocity ^ 2. 
+            F1 = (1 / 2)*m1*(v1**2)
+                
+            # change the y value
+            Player1.y -= F1
+                
+            # constantly reduce velocity
+            v1 = v1-0.5 #chage 0.5 lower values to get longer jump
+                
+            # object reached its maximum height 
+            if v1<0: 
+                # negative sign is added to counter negative velocity 
+                m1 =-1
+
+            # object is where is began
+            if v1 == -11:
+                m1,v1 = 1,10
+                isJump1 = False
+            
+        ############
+        # CONTROLS #
+        ############
+
+        
+
+        #make each frame last 30 miliseconds
+        pygame.time.delay(30) 
 
         #print(Player0.y)
         pygame.draw.rect(screen, (0, 0, 255), (Player0.x,Player0.y,Player0.w,Player0.h))
@@ -97,7 +148,7 @@ def main(jumping):
         
 
 #start the program
-main(False)
+main()
 
 # Done! Time to quit.
 pygame.quit()
