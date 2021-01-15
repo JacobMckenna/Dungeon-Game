@@ -68,11 +68,13 @@ def check_events(key_list):
 
 
 class Sprite:
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h,moveX = 0,moveY = 0):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
+        self.moveX = moveX
+        self.moveY = moveY
 
     #Detects if any sprite it touching the "obstacles" aka walls/floors
     def detectCollisions(self):
@@ -80,33 +82,52 @@ class Sprite:
         for i in obstacles:
             #if top left of self is colliding
             if(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y >= i.y):
-                if self.x <= i.x + (i.w - 6): #if touching on the left of self
+                
+                #if your top left if farther left than their top right (minus your movement)
+                if self.x <= i.x + (i.w - abs(self.moveX + 1)): #if touching on the top of self
                     self.y = i.y + i.h
-                elif self.y <= i.y + (i.h - 6): #if touching on the top of self
+
+                elif self.y <= i.y + (i.h - abs(self.moveY + 1)): #if touching on the left of self
                     self.x = i.x + i.w
+
             #if top right of self is colliding
             elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y >= i.y):
-                if self.x >= i.x - (self.w - 6):
+
+                if self.x >= i.x - (self.w - abs(self.moveX + 1)):
                     self.y = i.y + i.h
-                elif self.y <= i.y + (i.h - 6):
+
+                elif self.y <= i.y + (i.h - abs(self.moveY + 1)):
                     self.x = i.x - self.w
+
             #if bottom left of self is colliding
             elif(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y + self.h >= i.y):
-                if self.x <= i.x + (i.w - 6):
+
+                if self.x <= i.x + (i.w - abs(self.moveX + 1)): #touches more on bottom
                     self.y = i.y - self.h
-                elif self.y <= i.y + (i.h - 6):
-                    self.x = i.x + self.w
+                
+                elif self.y <= i.y + (self.h - abs(self.moveY + 1)): #touches more on left
+                    self.x = i.x + i.w
+                
             #if bottom right of self is colliding
             elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y + self.h >= i.y):
-                if self.x >= i.x - (self.w - 6):
+                
+                if self.x >= i.x - (self.w - abs(self.moveX + 1)): #touching more on the bottom
                     self.y = i.y - self.h
-                elif self.y <= i.y + (i.h - 6):
+                    #print(1, self.x,self.y)
+                
+                elif self.y <= i.y + (self.h - abs(self.moveY + 1)): #touching more on the right
                     self.x = i.x - self.w
+                    #print(2, self.x,self.y)
 
     #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
     def render(self,colour = (0, 0, 255),collision_pos = 0):
         #if collision_pos == 0:
+        self.x = self.x + self.moveX
+        self.y = self.y + self.moveY
         pygame.draw.rect(screen, colour, (self.x,self.y,self.w,self.h))
+        self.moveX = 0
+        self.moveY = 0
+        
         #elif collision_pos == 1:
         #    pygame.draw.rect(screen, colour, (self.x,self.y,self.w,self.h))
 
@@ -148,7 +169,7 @@ def main():
             F0 = (1 / 2)*m0*(v0**2)
                 
             # change the y value
-            Player0.y -= F0
+            Player0.moveY -= F0
                 
             # constantly reduce velocity
             v0 = v0-1
@@ -163,7 +184,7 @@ def main():
                 m0,v0 = 1,12
                 isJump0 = False
         else: #apply gravity
-            Player0.y = Player0.y + 5
+            Player0.moveY = Player0.moveY + 5
         
         #if player 1 is jumping
         if isJump1 == True:
@@ -171,7 +192,7 @@ def main():
             F1 = (1 / 2)*m1*(v1**2)
                 
             # change the y value
-            Player1.y -= F1
+            Player1.moveY -= F1
                 
             # constantly reduce velocity
             v1 = v1-1
@@ -186,7 +207,7 @@ def main():
                 m1,v1 = 1,12
                 isJump1 = False
         else: #apply gravity
-            Player1.y = Player1.y + 5
+            Player1.moveY = Player1.moveY + 5
         
 
 
@@ -196,14 +217,14 @@ def main():
         ############
 
         if key_list[1] == True: #if pressing a
-            Player0.x = Player0.x - 5 #move left
+            Player0.moveX = Player0.moveX - 5 #move left
         elif key_list[2] == True: #if pressing d
-            Player0.x = Player0.x + 5 #move right
+            Player0.moveX = Player0.moveX + 5 #move right
         
         if key_list[4] == True: #if pressing left
-            Player1.x = Player1.x - 5 #move left
+            Player1.moveX = Player1.moveX - 5 #move left
         elif key_list[5] == True: #if pressing right
-            Player1.x = Player1.x + 5 #move right
+            Player1.moveX = Player1.moveX + 5 #move right
 
         Player0.detectCollisions()
         Player0.render((0,0,255))
@@ -223,7 +244,8 @@ def main():
 obstacles = [Sprite(-100,0,125,800),
     Sprite(-100,-100,1200,125),
     Sprite(975,0,125,800),
-    Sprite(-100,775,1200,125)]
+    Sprite(-100,775,1200,125),
+    Sprite(200,750,200,50)]
 
 #start the program
 main()
