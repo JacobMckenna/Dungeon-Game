@@ -7,7 +7,7 @@
 import pygame
 
 #Import Other Files
-#from level_design.py import *
+#import level_design
 #from global_variables.py import *
 #from player_data.py import *
 
