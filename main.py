@@ -13,33 +13,42 @@ import pygame
 
 pygame.init()
 
+clock = pygame.time.Clock()
+
 #List Variables
-global current_level
+#global current_level
 
 # Set up the drawing window
-screen = pygame.display.set_mode([800, 600])
+screen = pygame.display.set_mode([1000, 800])
 
-def check_events():
-
-    #keys are w,a,d,up,left,right
-    key_list = [False,False,False,False,False,False]
+def check_events(key_list):
 
     #check all events that happened in this frame
     for event in pygame.event.get():
-        #Get all the pressed keys
-        pressed = pygame.key.get_pressed()
 
-        if pressed[pygame.K_a]: #if pressing a
-            key_list[1] = True
-        if pressed[pygame.K_d]: #if pressing d
-            key_list[2] = True
-
-        # Is there a key pressed down?
-        # The difference between this and using pressed[] is this only gives an output once
+        # Was a key just pressed down
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w: #if pressing w
+            if event.key == pygame.K_w: #if pressed w
                 #make the player jump
                 key_list[0] = True
+            if event.key == pygame.K_a: #if pressed a
+                #makes the player move left
+                key_list[1] = True
+            if event.key == pygame.K_d: #if pressed d
+                #makes the player move right
+                key_list[2] = True
+
+        # Was a key just let go
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_w: #if just stopped pressing w
+                #stops jumping
+                key_list[0] = False
+            if event.key == pygame.K_a: #if just stopped pressing a
+                #stop moving left
+                key_list[1] = False
+            if event.key == pygame.K_d: #if just stopped pressing d
+                #stop moving right
+                key_list[2] = False
         
         # Did the user click the window close button?
         if event.type == pygame.QUIT:
@@ -55,11 +64,50 @@ class Sprite:
         self.w = w
         self.h = h
 
+    #Detects if any sprite it touching the "obstacles" aka walls/floors
+    def detectCollisions(self):
+        global obstacles
+        for i in obstacles:
+            #if top left of self is colliding
+            if(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y >= i.y):
+                if self.x <= i.x + i.w:
+                    self.y = i.y + i.h
+                elif self.y <= i.y + i.h:
+                    self.x = i.x + self.w
+            #if top right of self is colliding
+            elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y >= i.y):
+                if self.x >= i.x - i.w:
+                    self.y = i.y + i.height
+                elif self.y <= i.y + i.h:
+                    self.x = i.x - self.width
+            #if bottom left of self is colliding
+            elif(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y + self.h >= i.y):
+                if self.x <= i.x + i.w:
+                    self.y = i.y - self.height
+                elif self.y <= i.y + i.h:
+                    self.x = i.x + self.width
+            #if bottom right of self is colliding
+            elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y + self.h >= i.y):
+                if self.x >= i.x - i.w:
+                    self.y = i.y - self.height
+                elif self.y <= i.y + i.h:
+                    self.x = i.x - self.width
+
+    #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
+    def render(self,colour = (0, 0, 255),collision_pos = 0):
+        #if collision_pos == 0:
+        pygame.draw.rect(screen, colour, (self.x,self.y,self.w,self.h))
+        #elif collision_pos == 1:
+        #    pygame.draw.rect(screen, colour, (self.x,self.y,self.w,self.h))
+
 def main():
     Player0 = Sprite(100, 100, 100, 100)
     Player1 = Sprite(300, 0, 100, 100)
 
     Players = [Player0,Player1]
+
+    #keys are w,a,d,up,left,right
+    key_list = [False,False,False,False,False,False]
 
     m0,v0, = 1,10
     m1,v1 = 1,10
@@ -72,23 +120,16 @@ def main():
         screen.fill((0,0,0))
 
         #check for any events this frame
-        keys = check_events()
-
-        print(keys[0],keys[1])
-
-        if keys[1] == True: #if pressing a
-            Player0.x = Player0.x - 5 #change 5 to change speed
-        elif keys[2] == True: #if pressing d
-            Player0.x = Player0.x + 5 #change 5 to change speed
+        key_list = check_events(key_list)
         
         ###########
         # JUMPING #
         ###########
 
-        if keys[0] == True:
+        if key_list[0] == True:
             isJump0 = True
         
-        if keys[3] == True:
+        if key_list[1] == True:
             isJump1 = True
 
         #if player0 is jumping
@@ -132,20 +173,37 @@ def main():
             if v1 == -11:
                 m1,v1 = 1,10
                 isJump1 = False
-            
+        
+
+
+
         ############
         # CONTROLS #
         ############
 
-        
-
-        #make each frame last 30 miliseconds
-        pygame.time.delay(30) 
+        if key_list[1] == True: #if pressing a
+            Player0.x = Player0.x - 5 #change 5 to change speed
+        elif key_list[2] == True: #if pressing d
+            Player0.x = Player0.x + 5 #change 5 to change speed
 
         #print(Player0.y)
-        pygame.draw.rect(screen, (0, 0, 255), (Player0.x,Player0.y,Player0.w,Player0.h))
+        Player0.detectCollisions()
+        Player0.render((0,0,255))
+
+        for block in obstacles:
+            block.render((100, 100, 100))
+
+        #pygame.draw.rect(screen, (0, 0, 255), (Player0.x,Player0.y,Player0.w,Player0.h))
         pygame.display.flip()
+
+        clock.tick(50)
         
+#First four objects are walls not visible on the map
+obstacles = [Sprite(-100,0,100,800),
+    Sprite(-100,-100,1200,100),
+    Sprite(1000,0,100,800),
+    Sprite(-100,800,1200,100),
+    Sprite(0,750,1000,50)]
 
 #start the program
 main()
