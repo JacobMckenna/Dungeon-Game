@@ -75,55 +75,66 @@ class Sprite:
         self.h = h
         self.moveX = moveX
         self.moveY = moveY
+    
+    def get_rect(self):
+        return pygame.Rect(self.x, self.y, self.w, self.h)
 
     #Detects if any sprite it touching the "obstacles" aka walls/floors
     def detectCollisions(self):
         global obstacles
+
         for i in obstacles:
+            #if self.get_rect().colliderect(i.get_rect()):
+            #   return True
+            #return False
             #if top left of self is colliding
             if(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y >= i.y):
                 
                 #if your top left if farther left than their top right (minus your movement)
-                if self.x <= i.x + (i.w - abs(self.moveX + 1)): #if touching on the top of self
+                if self.x <= i.x + (i.w - 6): #if touching on the top of self
                     self.y = i.y + i.h
-
-                elif self.y <= i.y + (i.h - abs(self.moveY + 1)): #if touching on the left of self
+                    
+                elif self.y <= i.y + (i.h - 6): #if touching on the left of self
                     self.x = i.x + i.w
 
             #if top right of self is colliding
-            elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y >= i.y):
+            if(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y >= i.y):
 
-                if self.x >= i.x - (self.w - abs(self.moveX + 1)):
+                if self.x >= i.x - (self.w - 6):
                     self.y = i.y + i.h
 
-                elif self.y <= i.y + (i.h - abs(self.moveY + 1)):
+                elif self.y <= i.y + (i.h - 6):
                     self.x = i.x - self.w
 
             #if bottom left of self is colliding
-            elif(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y + self.h >= i.y):
+            if(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y + self.h >= i.y):
 
-                if self.x <= i.x + (i.w - abs(self.moveX + 1)): #touches more on bottom
+                if self.x <= i.x + (i.w - 6): #touches more on bottom
                     self.y = i.y - self.h
                 
-                elif self.y <= i.y + (self.h - abs(self.moveY + 1)): #touches more on left
+                elif self.y <= i.y + (self.h - 6): #touches more on left
                     self.x = i.x + i.w
                 
             #if bottom right of self is colliding
-            elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y + self.h >= i.y):
+            if(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y + self.h >= i.y):
                 
-                if self.x >= i.x - (self.w - abs(self.moveX + 1)): #touching more on the bottom
+                if self.x >= i.x - (self.w - 6): #touching more on the bottom
                     self.y = i.y - self.h
                     #print(1, self.x,self.y)
                 
-                elif self.y <= i.y + (self.h - abs(self.moveY + 1)): #touching more on the right
+                elif self.y <= i.y + (self.h - 6): #touching more on the right
                     self.x = i.x - self.w
                     #print(2, self.x,self.y)
 
     #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
-    def render(self,colour = (0, 0, 255),collision_pos = 0):
-        #if collision_pos == 0:
+    def render(self,colour = (0, 0, 255),collisions = False):
+        
+        if collisions:
+            self.detectCollisions()
+
         self.x = self.x + self.moveX
         self.y = self.y + self.moveY
+
         pygame.draw.rect(screen, colour, (self.x,self.y,self.w,self.h))
         self.moveX = 0
         self.moveY = 0
@@ -180,8 +191,8 @@ def main():
                 m0 =-1
 
             # object is where is began
-            if v0 == -13:
-                m0,v0 = 1,12
+            if v0 == -12:
+                m0,v0 = 1,11
                 isJump0 = False
         else: #apply gravity
             Player0.moveY = Player0.moveY + 5
@@ -203,8 +214,8 @@ def main():
                 m1 =-1
 
             # object is where is began
-            if v1 == -13:
-                m1,v1 = 1,12
+            if v1 == -12:
+                m1,v1 = 1,11
                 isJump1 = False
         else: #apply gravity
             Player1.moveY = Player1.moveY + 5
@@ -226,14 +237,12 @@ def main():
         elif key_list[5] == True: #if pressing right
             Player1.moveX = Player1.moveX + 5 #move right
 
-        Player0.detectCollisions()
-        Player0.render((0,0,255))
-
-        Player1.detectCollisions()
-        Player1.render((255,0,0))
-
         for block in obstacles:
             block.render((100, 100, 100))
+        
+        Player0.render((0,0,255),True)
+
+        Player1.render((255,0,0),True)
 
         #pygame.draw.rect(screen, (0, 0, 255), (Player0.x,Player0.y,Player0.w,Player0.h))
         pygame.display.flip()
@@ -244,8 +253,8 @@ def main():
 obstacles = [Sprite(-100,0,125,800),
     Sprite(-100,-100,1200,125),
     Sprite(975,0,125,800),
-    Sprite(-100,775,1200,125),
-    Sprite(200,750,200,50)]
+    Sprite(200,700,200,100),
+    Sprite(-100,775,1200,125)]
 
 #start the program
 main()
