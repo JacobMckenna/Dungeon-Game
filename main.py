@@ -32,11 +32,16 @@ def check_events(key_list):
                 #make the player jump
                 key_list[0] = True
             if event.key == pygame.K_a: #if pressed a
-                #makes the player move left
                 key_list[1] = True
             if event.key == pygame.K_d: #if pressed d
-                #makes the player move right
                 key_list[2] = True
+            if event.key == pygame.K_UP: #if pressed up
+                #make the player jump
+                key_list[3] = True
+            if event.key == pygame.K_LEFT: #if pressed left
+                key_list[4] = True
+            if event.key == pygame.K_RIGHT: #if pressed right
+                key_list[5] = True
 
         # Was a key just let go
         if event.type == pygame.KEYUP:
@@ -44,11 +49,16 @@ def check_events(key_list):
                 #stops jumping
                 key_list[0] = False
             if event.key == pygame.K_a: #if just stopped pressing a
-                #stop moving left
                 key_list[1] = False
             if event.key == pygame.K_d: #if just stopped pressing d
-                #stop moving right
                 key_list[2] = False
+            if event.key == pygame.K_UP: #if just stopped pressing up
+                #stops jumping
+                key_list[3] = False
+            if event.key == pygame.K_LEFT: #if just stopped pressing left
+                key_list[4] = False
+            if event.key == pygame.K_RIGHT: #if just stopped pressing right
+                key_list[5] = False
         
         # Did the user click the window close button?
         if event.type == pygame.QUIT:
@@ -70,28 +80,28 @@ class Sprite:
         for i in obstacles:
             #if top left of self is colliding
             if(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y >= i.y):
-                if self.x <= i.x + i.w:
+                if self.x <= i.x + (i.w - 6): #if touching on the left of self
                     self.y = i.y + i.h
-                elif self.y <= i.y + i.h:
-                    self.x = i.x + self.w
+                elif self.y <= i.y + (i.h - 6): #if touching on the top of self
+                    self.x = i.x + i.w
             #if top right of self is colliding
             elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y >= i.y):
-                if self.x >= i.x - i.w:
-                    self.y = i.y + i.height
-                elif self.y <= i.y + i.h:
-                    self.x = i.x - self.width
+                if self.x >= i.x - (self.w - 6):
+                    self.y = i.y + i.h
+                elif self.y <= i.y + (i.h - 6):
+                    self.x = i.x - self.w
             #if bottom left of self is colliding
             elif(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y + self.h >= i.y):
-                if self.x <= i.x + i.w:
-                    self.y = i.y - self.height
-                elif self.y <= i.y + i.h:
-                    self.x = i.x + self.width
+                if self.x <= i.x + (i.w - 6):
+                    self.y = i.y - self.h
+                elif self.y <= i.y + (i.h - 6):
+                    self.x = i.x + self.w
             #if bottom right of self is colliding
             elif(i.x + i.w >= self.x + self.w >= i.x and i.y + i.h >= self.y + self.h >= i.y):
-                if self.x >= i.x - i.w:
-                    self.y = i.y - self.height
-                elif self.y <= i.y + i.h:
-                    self.x = i.x - self.width
+                if self.x >= i.x - (self.w - 6):
+                    self.y = i.y - self.h
+                elif self.y <= i.y + (i.h - 6):
+                    self.x = i.x - self.w
 
     #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
     def render(self,colour = (0, 0, 255),collision_pos = 0):
@@ -101,16 +111,16 @@ class Sprite:
         #    pygame.draw.rect(screen, colour, (self.x,self.y,self.w,self.h))
 
 def main():
-    Player0 = Sprite(100, 100, 100, 100)
-    Player1 = Sprite(300, 0, 100, 100)
+    Player0 = Sprite(100, 100, 40, 60)
+    Player1 = Sprite(300, 0, 40, 60)
 
     Players = [Player0,Player1]
 
     #keys are w,a,d,up,left,right
     key_list = [False,False,False,False,False,False]
 
-    m0,v0, = 1,10
-    m1,v1 = 1,10
+    m0,v0, = 1,12
+    m1,v1 = 1,12
 
     isJump0,isJump1 = False,False
 
@@ -129,7 +139,7 @@ def main():
         if key_list[0] == True:
             isJump0 = True
         
-        if key_list[1] == True:
+        if key_list[3] == True:
             isJump1 = True
 
         #if player0 is jumping
@@ -141,17 +151,19 @@ def main():
             Player0.y -= F0
                 
             # constantly reduce velocity
-            v0 = v0-1 #chage 0.5 lower values to get longer jump
+            v0 = v0-1
                 
             # object reached its maximum height 
-            if v0<0: 
+            if v0 < 0: 
                 # negative sign is added to counter negative velocity 
                 m0 =-1
 
             # object is where is began
-            if v0 == -11:
-                m0,v0 = 1,10
+            if v0 == -13:
+                m0,v0 = 1,12
                 isJump0 = False
+        else: #apply gravity
+            Player0.y = Player0.y + 5
         
         #if player 1 is jumping
         if isJump1 == True:
@@ -162,7 +174,7 @@ def main():
             Player1.y -= F1
                 
             # constantly reduce velocity
-            v1 = v1-0.5 #chage 0.5 lower values to get longer jump
+            v1 = v1-1
                 
             # object reached its maximum height 
             if v1<0: 
@@ -170,9 +182,11 @@ def main():
                 m1 =-1
 
             # object is where is began
-            if v1 == -11:
-                m1,v1 = 1,10
+            if v1 == -13:
+                m1,v1 = 1,12
                 isJump1 = False
+        else: #apply gravity
+            Player1.y = Player1.y + 5
         
 
 
@@ -182,13 +196,20 @@ def main():
         ############
 
         if key_list[1] == True: #if pressing a
-            Player0.x = Player0.x - 5 #change 5 to change speed
+            Player0.x = Player0.x - 5 #move left
         elif key_list[2] == True: #if pressing d
-            Player0.x = Player0.x + 5 #change 5 to change speed
+            Player0.x = Player0.x + 5 #move right
+        
+        if key_list[4] == True: #if pressing left
+            Player1.x = Player1.x - 5 #move left
+        elif key_list[5] == True: #if pressing right
+            Player1.x = Player1.x + 5 #move right
 
-        #print(Player0.y)
         Player0.detectCollisions()
         Player0.render((0,0,255))
+
+        Player1.detectCollisions()
+        Player1.render((255,0,0))
 
         for block in obstacles:
             block.render((100, 100, 100))
@@ -199,11 +220,10 @@ def main():
         clock.tick(50)
         
 #First four objects are walls not visible on the map
-obstacles = [Sprite(-100,0,100,800),
-    Sprite(-100,-100,1200,100),
-    Sprite(1000,0,100,800),
-    Sprite(-100,800,1200,100),
-    Sprite(0,750,1000,50)]
+obstacles = [Sprite(-100,0,125,800),
+    Sprite(-100,-100,1200,125),
+    Sprite(975,0,125,800),
+    Sprite(-100,775,1200,125)]
 
 #start the program
 main()
