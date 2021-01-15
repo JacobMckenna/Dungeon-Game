@@ -78,15 +78,19 @@ class Sprite:
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, self.w, self.h)
+    
+    def collisions2(self):
+        global obstacles
+        for i in obstacles:
+            if self.get_rect().colliderect(i.get_rect()):
+               return True
+            return False
 
     #Detects if any sprite it touching the "obstacles" aka walls/floors
     def detectCollisions(self):
         global obstacles
 
         for i in obstacles:
-            #if self.get_rect().colliderect(i.get_rect()):
-            #   return True
-            #return False
             #if top left of self is colliding
             if(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y >= i.y):
                 
@@ -189,7 +193,10 @@ def main():
             if v0 < 0: 
                 # negative sign is added to counter negative velocity 
                 m0 =-1
-
+                if Player0.collisions2():
+                    isJump0 = False
+                    Player0.moveY = 0
+            
             # object is where is began
             if v0 == -12:
                 m0,v0 = 1,11
