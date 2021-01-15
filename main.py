@@ -111,8 +111,8 @@ class Sprite:
         #    pygame.draw.rect(screen, colour, (self.x,self.y,self.w,self.h))
 
 def main():
-    Player0 = Sprite(100, 100, 40, 60)
-    Player1 = Sprite(300, 0, 40, 60)
+    Player0 = Sprite(50, 750, 40, 60)
+    Player1 = Sprite(900, 750, 40, 60)
 
     Players = [Player0,Player1]
 
