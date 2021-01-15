@@ -7,7 +7,7 @@
 import pygame
 
 #Import Other Files
-#from level_design.py import *
+#import level_design
 #from global_variables.py import *
 #from player_data.py import *
 
@@ -223,7 +223,9 @@ def main():
 obstacles = [Sprite(-100,0,125,800),
     Sprite(-100,-100,1200,125),
     Sprite(975,0,125,800),
-    Sprite(-100,775,1200,125)]
+    Sprite(-100,775,1200,125),
+
+    Sprite(500,700,200,100)] #added another obstacle
 
 #start the program
 main()

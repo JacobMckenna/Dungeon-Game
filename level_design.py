@@ -3,7 +3,7 @@
 #level_design.py
 #Creates all the levels to be used for the game.
 
-from global_variables.py import *
+#from global_variables.py import *
 
 # "*" = open sapce
 # "x" = map barrier
@@ -44,11 +44,11 @@ def display_level(level,screen):
         pygame.draw.rect(screen, (0, 0, 0), (x*50,y*50,50,50))
 
 #Checks if object is colliding
-def detect_collision(attributes):
-  global current_level
-
-  for y in range(len(current_level)):
-    for x in range(len(current_level[0])):
-      if current_level[y][x] == "x":
-        #if (x*50)+(y*50) >= attributes[0]:
-        print("hi")
+#def detect_collision(attributes):
+#  global current_level
+#
+#  for y in range(len(current_level)):
+#    for x in range(len(current_level[0])):
+#      if current_level[y][x] == "x":
+#        #if (x*50)+(y*50) >= attributes[0]:
+#        print("hi")
