@@ -227,9 +227,6 @@ def main():
         else: #apply gravity
             Player1.moveY = Player1.moveY + 5
         
-
-
-
         ############
         # CONTROLS #
         ############
