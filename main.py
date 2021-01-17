@@ -437,8 +437,12 @@ def render_level(level):
         block.render((150, 150, 150))
 
     for block in red_only:
+        block.y += 10
+        block.h -= 10
         block.render((200, 50, 50))
     for block in blue_only:
+        block.y += 10
+        block.h -= 10
         block.render((50, 50, 200))
 
 
