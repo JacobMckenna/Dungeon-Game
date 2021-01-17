@@ -145,7 +145,7 @@ class Sprite:
                 if self == Players[0]:
                     print("Restarting Level...")
                     #restart the level
-                    get_player_start(current_level)
+                    reset_players(current_level)
         
         for blue in blue_only:
             #if it is colliding with a blue rectagle
@@ -154,7 +154,7 @@ class Sprite:
                 if self == Players[1]:
                     print("Restarting Level...")
                     #restart the level
-                    get_player_start(current_level)
+                    reset_players(current_level)
                     
 
     #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
@@ -177,7 +177,7 @@ def main():
     global Players
 
     current_level = testing_level
-    Players = get_player_start(current_level) # returns a list of [Player0,Player1]
+    Players = get_player_sprite(current_level) # returns a list of [Player0,Player1]
     
     Player0 = Players[0]
     Player1 = Players[1]
@@ -187,8 +187,8 @@ def main():
     #keys are w,a,d,up,left,right
     key_list = [False,False,False,False,False,False]
 
-    m0,v0, = 4,5
-    m1,v1 = 4,5
+    m0,v0, = 4,6
+    m1,v1 = 4,6
 
     # Run until the user asks to quit
     while True:
@@ -226,8 +226,8 @@ def main():
                 m0 = -0.1
             
             # object is where is began
-            if v0 == -6:
-                m0,v0 = 4,5
+            if v0 == -7:
+                m0,v0 = 4,6
                 isJump0 = False
                 Player0.can_jump = False
         else: #apply gravity
@@ -250,8 +250,8 @@ def main():
                 m1 = -0.1
 
             # object is where is began
-            if v1 == -6:
-                m1,v1 = 4,5
+            if v1 == -7:
+                m1,v1 = 4,6
                 Player1.jumping = False
                 Player1.can_jump = False
         else: #apply gravity
@@ -295,7 +295,7 @@ def main():
 # MAP LEGEND
 
 # "." = open sapce
-# "x" = map barrier
+# "x" = map barrier --  CANNOT HAVE 1 BLOCK GAPS OR CAN JUMP THROUGH
 # "E" = door
 # "R" = red only area
 # "B" = blue only area
@@ -323,8 +323,8 @@ testing_level = [
     [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #8
     [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #9
     [ "x",".","x","x",".",".",".",".",".",".",".",".",".",".",".",".","x","x",".","x" ], #10
-    [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #11
-    [ "x",".",".",".",".",".",".",".",".","x","x",".",".",".",".",".",".",".",".","x" ], #12
+    [ "x",".",".",".",".",".",".",".",".","x","x",".",".",".",".",".",".",".",".","x" ], #11
+    [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #12
     [ "x",".",".",".",".",".",".","i",".",".",".",".","i",".",".",".",".",".",".","x" ], #13
     [ "x","E",".","0",".","B","B","x","x","x","x","x","x","R","R",".","1",".",".","x" ], #14
     [ "x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x" ]  #15
@@ -357,12 +357,12 @@ def draw_door(x,y):
     wood_colour = (60,40,0)
     black_colour = (0,0,0)
 
-    pygame.draw.rect(screen, black_colour, (x+2, y, 46, 50))
-    pygame.draw.rect(screen, wood_colour, (x+2, y, 46, 50))
+    pygame.draw.rect(screen, wood_colour, (x, y, 50, 50))
+    pygame.draw.rect(screen, black_colour, (x+10, y+10, 30, 40))
 
-
-# get the location of the player starting position. can use for any map
-def get_player_start(current_level):
+# DONT USE THIS ONE, USE THE ONE BELOW
+# get the location of the player starting position (SPRITE). can use for any map
+def get_player_sprite(current_level):
     for y in range(len(current_level)):
         for x in range(len(current_level[0])):
             
@@ -372,6 +372,32 @@ def get_player_start(current_level):
                 Player1 = Sprite(x*50, y*50, 40, 50)
     Players = [Player0,Player1]
     return Players
+
+#USE THIS ONE
+def reset_players(current_level):
+    global Players
+    #for every column
+    for y in range(len(current_level)):
+        #for every value in the column
+        for x in range(len(current_level[0])):
+            # "0" is the key for Player0 spawn
+            if current_level[y][x] == "0":
+                Players[0].x = x*50
+                Players[0].y = y*50
+            # "1" is the key for Player1 spawn
+            if current_level[y][x] == "1":
+                Players[1].x = x*50
+                Players[1].y = y*50
+    return Players
+
+#returns the coordinates of the door to exit the map
+def get_door_location(current_level):
+    for y in range(len(current_level)):
+        for x in range(len(current_level[0])):
+            
+            if current_level[y][x] == "E":
+                door = (x*50, y*50)
+    return door
     
 #Displays the chosen level to the user
 def render_level(level):
@@ -394,8 +420,7 @@ def render_level(level):
             
             #render the door
             if level[y][x] == "E":
-                door = Sprite(x*50,y*50,50,50)
-                door.render((80, 60, 0))
+                draw_door(x*50,y*50)
             
             #render torches
             if level[y][x] == "i":
