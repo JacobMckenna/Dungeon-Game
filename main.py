@@ -87,7 +87,7 @@ class Sprite:
     #Detects if any sprite it touching the "obstacles" aka walls/floors
     def detectCollisions(self):
         
-        global obstacles,red_only,blue_only,Players,current_level
+        global obstacles,red_only,blue_only,Players,current_level,doors
 
         for i in obstacles:
             #if top left of self is colliding
@@ -187,8 +187,8 @@ def main():
     #keys are w,a,d,up,left,right
     key_list = [False,False,False,False,False,False]
 
-    m0,v0, = 4,6
-    m1,v1 = 4,6
+    m0,v0, = 4,5
+    m1,v1 = 4,5
 
     # Run until the user asks to quit
     while True:
@@ -226,8 +226,8 @@ def main():
                 m0 = -0.1
             
             # object is where is began
-            if v0 == -7:
-                m0,v0 = 4,6
+            if v0 == -6:
+                m0,v0 = 4,5
                 isJump0 = False
                 Player0.can_jump = False
         else: #apply gravity
@@ -250,8 +250,8 @@ def main():
                 m1 = -0.1
 
             # object is where is began
-            if v1 == -7:
-                m1,v1 = 4,6
+            if v1 == -6:
+                m1,v1 = 4,5
                 Player1.jumping = False
                 Player1.can_jump = False
         else: #apply gravity
@@ -302,6 +302,8 @@ def main():
 # "0" = player 0 start
 # "1" = player 1 start
 # "i" = decoration torch
+# "_" = pressure plate
+# "|" = vertical door (shift + \ NOT capital "i")
 
 
 #display = pygame.display.set_mode((800,800))
@@ -319,13 +321,13 @@ testing_level = [
     [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #4
     [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #5   x going across
     [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #6   y going down
-    [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #7
-    [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #8
-    [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #9
-    [ "x",".","x","x",".",".",".",".",".",".",".",".",".",".",".",".","x","x",".","x" ], #10
+    [ "x",".",".",".",".",".",".",".",".",".",".",".",".","x","x","x","x","x","x","x" ], #7
+    [ "x",".",".",".",".",".",".",".",".",".",".",".",".","|",".",".",".",".",".","x" ], #8
+    [ "x",".",".",".",".",".",".",".",".",".",".",".",".","|",".",".",".",".",".","x" ], #9
+    [ "x",".","x","x",".",".",".",".",".",".",".",".",".","x","x","x","x","x",".","x" ], #10
     [ "x",".",".",".",".",".",".",".",".","x","x",".",".",".",".",".",".",".",".","x" ], #11
-    [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","x" ], #12
-    [ "x",".",".",".",".",".",".","i",".",".",".",".","i",".",".",".",".",".",".","x" ], #13
+    [ "x",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".",".","_","x" ], #12
+    [ "x",".",".",".",".",".",".","i",".",".",".",".","i",".",".",".",".",".","x","x" ], #13
     [ "x","E",".","0",".","B","B","x","x","x","x","x","x","R","R",".","1",".",".","x" ], #14
     [ "x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x","x" ]  #15
 ]
@@ -405,10 +407,14 @@ def render_level(level):
     global obstacles
     global red_only
     global blue_only
+    global pressure_plates
+    global doors
 
     obstacles = []
     red_only = []
     blue_only = []
+    pressure_plates = []
+    doors = []
 
     current_level = level
     for y in range(len(level)):
@@ -431,6 +437,16 @@ def render_level(level):
                 red_only.append(Sprite(x*50,y*50,50,50))
             if level[y][x] == "B":
                 blue_only.append(Sprite(x*50,y*50,50,50))
+            
+            #add pressure plates to their respective lists
+            if level[y][x] == "_":
+                pressure_plates.append(Sprite(x*50,y*50 + 40,50,10))
+            
+            #add doors to their respective lists
+            if level[y][x] == "|":
+                obstacles.append(Sprite(x*50,y*50,50,50))
+                doors.append(Sprite(x*50,y*50,50,50))
+
     
     # render in special collidable blocks
     for block in obstacles:
@@ -440,11 +456,17 @@ def render_level(level):
         block.y += 10
         block.h -= 10
         block.render((200, 50, 50))
+    
     for block in blue_only:
         block.y += 10
         block.h -= 10
         block.render((50, 50, 200))
 
+    for block in pressure_plates:
+        block.render((100, 50, 50))
+    
+    for block in doors:
+        block.render((255, 255, 255))
 
 main()
 
