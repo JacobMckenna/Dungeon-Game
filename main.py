@@ -29,7 +29,7 @@ def check_events(key_list):
     #check all events that happened in this frame
     for event in pygame.event.get():
 
-        # Was a key just pressed down
+        # was a key just pressed down?
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w: #if pressed w
                 #make the player jump
@@ -46,7 +46,7 @@ def check_events(key_list):
             if event.key == pygame.K_RIGHT: #if pressed right
                 key_list[5] = True
 
-        # Was a key just let go
+        # was a key just let go?
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_w: #if just stopped pressing w
                 #stops jumping
@@ -65,30 +65,40 @@ def check_events(key_list):
         
         # Did the user click the window close button?
         if event.type == pygame.QUIT:
+            #quit the program
             pygame.quit()
-        
+    
+    #return a list of all significant keys (either True or False for each)
     return key_list
 
 
+#class used for creating obstacles and players
 class Sprite:
     def __init__(self, x, y, w, h):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.moveX = 0
-        self.moveY = 0
-        self.jumping = False
-        self.can_jump = True
+        self.x = x #x coordinate
+        self.y = y #y coordinate
+        self.w = w #width
+        self.h = h #height
+        self.moveX = 0 #how far to move x this frame
+        self.moveY = 0 #how far to move y this frame
+
+        #jumping related values:
+        self.mass = 4
+        self.velocity = 5
+        self.jumping = False #the player is not starting jumping
+        self.can_jump = True #the player is able to jump
     
     def get_rect(self):
+        #returns a pygame Rect of the sprite
         return pygame.Rect(int(self.x), int(self.y), int(self.w), int(self.h))
 
     #Detects if any sprite it touching the "obstacles" aka walls/floors
     def detectCollisions(self):
         
+        #get all the global lists that this function requires
         global obstacles,red_only,blue_only,Players,current_level,doors
-
+        
+        #loop through all walls/floors
         for i in obstacles:
             #if top left of self is colliding
             if(i.x + i.w >= self.x >= i.x and i.y + i.h >= self.y >= i.y):
@@ -138,6 +148,7 @@ class Sprite:
                 elif self.y <= i.y + (self.h ):#- abs(self.moveY)): #touches more on the right
                     self.x = i.x - self.w
 
+        #go through all the red only squares
         for red in red_only:
             #if it is colliding with a red rectagle
             if self.get_rect().colliderect(red.get_rect()):
@@ -147,6 +158,7 @@ class Sprite:
                     #restart the level
                     reset_players(current_level)
         
+        #go through all the blue only squares
         for blue in blue_only:
             #if it is colliding with a blue rectagle
             if self.get_rect().colliderect(blue.get_rect()):
@@ -156,36 +168,65 @@ class Sprite:
                     #restart the level
                     reset_players(current_level)
         
+        #go through every pressure plate
         for button in pressure_plates:
             #if touching a button
             if self.get_rect().colliderect(button.rect):
                 #print("Touching a Button")
                 button.active = True
+
                 for door in doors:
+                    #set door to open
                     door.open = True
         
 
-    #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
     def render(self,colour = (0, 0, 255),collisions = False):
         
         #if collisions are enabled (only on players)
         if collisions:
+            #check for any collisions
             self.detectCollisions()
 
+        #move the x and y the amount calculated over this frame
         self.x = self.x + self.moveX
         self.y = self.y + self.moveY
 
         #draws a rectagle with dimentions of self
         pygame.draw.rect(screen, colour, self.get_rect())
+
+        #reset movement to 0 for next frame
         self.moveX = 0
         self.moveY = 0
+    
+    def jump(self):
+        # Force = 1 / 2 * mass * velocity ^ 2
+        F  = (1 / 2)* self.mass * (self.velocity**2)
+        
+        # change the y value
+        self.moveY -= F
+        
+        # constantly reduce velocity (therefore making it an arc shaped jump)
+        self.velocity = self.velocity-1
+        
+        # object reached its maximum height 
+        if self.velocity < 0: 
+            # negative sign is added to counter negative velocity 
+            self.mass = -0.1
+        
+        # object is where is began
+        if self.velocity == -6:
+            #reset mass and velocity now that the jump is finished
+            self.mass,self.velocity = 4,5
+            self.jumping = False #sprite is no longer jumping
+            self.can_jump = False #sprite can not jump right away
+        
 
 
 
 class Pressure_Plate:
     def __init__(self,rect):
         self.rect = rect
-        #self.id = id
+        #self.id = id #unused variable
         self.active = False
 
     def render(self):
@@ -200,16 +241,25 @@ class Pressure_Plate:
             #make it red
             colour = (100,0,0)
         
+        #draw a rectagle where the pressure plate's rect is (red if off, green if on)
         pygame.draw.rect(screen, colour, self.rect)
 
 class Door:
     def __init__(self,rect):
-        self.rect = rect
-        self.open = False
+        self.rect = rect #a python rect (x,y,width,hight)
+        self.open = False #the door starts closed
     
     def render(self):
+        global current_level
+
+        #if the door is closed
         if self.open == False:
+            #draw a rectagle where the door is
             pygame.draw.rect(screen, (255,255,255), self.rect)
+
+            modify_level("/","|") #replace all "/" (open door) with "|" (closed door)
+        else: #if the door is open
+            modify_level("|","/")#replace all "|" (open door) with "/" (closed door)
 
 
 # Main
@@ -220,23 +270,19 @@ def main():
     global pressure_plates
 
     current_level = testing_level
-    Players = get_player_sprite(current_level) # returns a list of [Player0,Player1]
+    Players = create_player_sprite(current_level) # returns a list of [Player0,Player1]
     
+    #changes player0 and player1 to nicer variables
     Player0 = Players[0]
     Player1 = Players[1]
-
-    #Players = [Player0,Player1]
 
     #keys are w,a,d,up,left,right
     key_list = [False,False,False,False,False,False]
 
-    m0,v0, = 4,5
-    m1,v1 = 4,5
-
     # Run until the user asks to quit
     while True:
 
-        #screen.fill((0,0,0))
+        #draws the stone brick background
         draw_stone_background()
 
         #check for any events this frame
@@ -245,58 +291,18 @@ def main():
         ###########
         # JUMPING #
         ###########
-
-        if key_list[0] == True:
-            Player0.jumping = True
         
-        if key_list[3] == True:
-            Player1.jumping = True
-
-        #if player0 is jumping
-        if Player0.jumping == True and Player0.can_jump == True:
-            # F = 1 / 2 * mass * velocity ^ 2. 
-            F0 = (1 / 2)*m0*(v0**2)
-                
-            # change the y value
-            Player0.moveY -= F0
-                
-            # constantly reduce velocity
-            v0 = v0-1
-                
-            # object reached its maximum height 
-            if v0 < 0: 
-                # negative sign is added to counter negative velocity 
-                m0 = -0.1
-            
-            # object is where is began
-            if v0 == -6:
-                m0,v0 = 4,5
-                isJump0 = False
-                Player0.can_jump = False
+        #if pressing "w"
+        if key_list[0] == True and Player0.can_jump == True:
+            #make player 0 jump
+            Player0.jump()
         else: #apply gravity
             Player0.moveY = Player0.moveY + 5
         
-        #if player 1 is jumping
-        if Player1.jumping == True and Player1.can_jump == True:
-            # F = 1 / 2 * mass * velocity ^ 2. 
-            F1 = (1 / 2)*m1*(v1**2)
-                
-            # change the y value
-            Player1.moveY -= F1
-                
-            # constantly reduce velocity
-            v1 = v1-1
-                
-            # object reached its maximum height 
-            if v1<0: 
-                # negative sign is added to counter negative velocity 
-                m1 = -0.1
-
-            # object is where is began
-            if v1 == -6:
-                m1,v1 = 4,5
-                Player1.jumping = False
-                Player1.can_jump = False
+        #if pressing "up"
+        if key_list[3] == True and Player1.can_jump == True:
+            #make player 1 jump
+            Player1.jump()
         else: #apply gravity
             Player1.moveY = Player1.moveY + 5
         
@@ -314,19 +320,18 @@ def main():
         elif key_list[5] == True: #if pressing right
             Player1.moveX = Player1.moveX + 5 #move right
         
+        #display the current level
         render_level(current_level)
 
+        #render the players in the map
         Player0.render((0,0,255),True)
-
         Player1.render((255,0,0),True)
 
+        #render the buttons and doors
         for button in pressure_plates:
             button.render()
-        
         for door in doors:
             door.render()
-
-        #pygame.draw.rect(screen, (0, 0, 255), (Player0.x,Player0.y,Player0.w,Player0.h))
 
         #refresh display
         pygame.display.flip()
@@ -348,7 +353,7 @@ def main():
 
 # "." = open sapce
 # "x" = map barrier --  CANNOT HAVE 1 BLOCK GAPS OR CAN JUMP THROUGH
-# "E" = door
+# "E" = exit
 # "R" = red only area
 # "B" = blue only area
 # "0" = player 0 start
@@ -396,36 +401,31 @@ def draw_stone_background():
             else:
                 pygame.draw.rect(screen, brick_colour, (x-30, y, 56, 26))
 
-
-
-
 # draws a small torch
 def draw_torch(x,y):
+    #colour palette
     wood_colour = (60,40,0)
     centre_flame_colour = (200,90,0)
     outer_flame_colour = (200,150,0)
 
+    #draws the parts of the torch
     pygame.draw.rect(screen, wood_colour, (x+22, y+20, 6, 15))
     pygame.draw.rect(screen, outer_flame_colour, (x+19, y+8, 12, 12))
     pygame.draw.rect(screen, centre_flame_colour, (x+21, y+12, 8, 8))
 
-
-
-
 # draws the exit door
-def draw_door(x,y):
+def draw_exit(x,y):
+    #colour palette
     wood_colour = (60,40,0)
     black_colour = (0,0,0)
 
+    #draws the parts of the exit
     pygame.draw.rect(screen, wood_colour, (x, y, 50, 50))
     pygame.draw.rect(screen, black_colour, (x+10, y+10, 30, 40))
 
-
-
-
 # DONT USE THIS ONE, USE THE ONE BELOW
-# get the location of the player starting position (SPRITE). can use for any map
-def get_player_sprite(current_level):
+# get the location of the player starting position (SPRITE).
+def create_player_sprite(current_level):
     for y in range(len(current_level)):
         for x in range(len(current_level[0])):
             
@@ -435,9 +435,6 @@ def get_player_sprite(current_level):
                 Player1 = Sprite(x*50, y*50, 40, 50)
     Players = [Player0,Player1]
     return Players
-
-
-
 
 #USE THIS ONE
 def reset_players(current_level):
@@ -456,20 +453,30 @@ def reset_players(current_level):
                 Players[1].y = y*50
     return Players
 
-
-
-
 #returns the coordinates of the door to exit the map
-def get_door_location(current_level):
+def get_exit_location(current_level):
     for y in range(len(current_level)):
         for x in range(len(current_level[0])):
             
             if current_level[y][x] == "E":
-                door = (x*50, y*50)
-    return door
+                exit = (x*50, y*50)
+    return exit
 
+# takes in two values, seraches the map for the first value and if found will change to the second one
+def modify_level(old_value, new_value):
+    global current_level
+    
+    for y in range(len(current_level)):
+        for x in range(len(current_level[0])):
+            if current_level[y][x] == old_value:
+                current_level[y][x] = new_value
 
-
+#renders the list of blocks with an colour inputed
+def render_block_list(list_to_render, R, G, B, height=0):
+    for block in list_to_render:
+        block.y += height
+        block.h -= height
+        block.render((R, G, B))
 
 #Displays the chosen level to the user
 def render_level(level):
@@ -480,13 +487,19 @@ def render_level(level):
     global pressure_plates
     global doors
 
+    #reset sprite lists
     obstacles = []
     red_only = []
     blue_only = []
     pressure_plates = []
     doors = []
-
+    
+    #render each block
+    if level != current_level:
+        reset_players(level)
     current_level = level
+
+    #check each spot in the level
     for y in range(len(level)):
         for x in range(len(level[0])):
             
@@ -494,43 +507,37 @@ def render_level(level):
             if level[y][x] == "x":
                 obstacles.append(Sprite(x*50,y*50,50,50))
             
-            #render the door
-            if level[y][x] == "E":
-                draw_door(x*50,y*50)
+            #render the exit
+            elif level[y][x] == "E":
+                draw_exit(x*50,y*50)
             
             #render torches
-            if level[y][x] == "i":
+            elif level[y][x] == "i":
                 draw_torch(x*50,y*50)
             
             #add red/blue only blocks to their respective lists
-            if level[y][x] == "R":
+            elif level[y][x] == "R":
                 red_only.append(Sprite(x*50,y*50,50,50))
-            if level[y][x] == "B":
+            elif level[y][x] == "B":
                 blue_only.append(Sprite(x*50,y*50,50,50))
             
             #add pressure plates to their respective lists
-            if level[y][x] == "_":
+            elif level[y][x] == "_":
                 pressure_plates.append(Pressure_Plate((x*50,y*50 + 40,50,20)))
             
-            #add doors to their respective lists
-            if level[y][x] == "|":
+            #add closed doors to the door and obstacle list
+            elif level[y][x] == "|":
                 obstacles.append(Sprite(x*50,y*50,50,50))
                 doors.append(Door((x*50,y*50,50,50)))
-
+            
+            #add opened doors to the door list
+            elif level[y][x] == "/":
+                doors.append(Door((x*50,y*50,50,50)))
     
-    # render in special collidable blocks
-    for block in obstacles:
-        block.render((150, 150, 150))
-
-    for block in red_only:
-        block.y += 10
-        block.h -= 10
-        block.render((200, 50, 50))
-    
-    for block in blue_only:
-        block.y += 10
-        block.h -= 10
-        block.render((50, 50, 200))
+    #render the blocks in each list
+    render_block_list(obstacles, 150, 150, 150)
+    render_block_list(red_only, 200, 50, 50, 10)
+    render_block_list(blue_only, 50, 50, 200, 10)
 
 main()
 
