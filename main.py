@@ -71,15 +71,13 @@ def check_events(key_list):
 
 
 class Sprite:
-    def __init__(self, x, y, w, h,door = "",button = ""):
+    def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
         self.moveX = 0
         self.moveY = 0
-        self.door = door
-        self.button = button
         self.jumping = False
         self.can_jump = True
     
@@ -158,17 +156,19 @@ class Sprite:
                     #restart the level
                     reset_players(current_level)
         
-        for plate in pressure_plates:
-            #if colliding with a pressure plate
-            if self.get_rect().colliderect(plate.get_rect()):
-                #if self is one of the Players
-                if self == Players[0] or self == Players[1]:
-                    render_pressure_plates(plate,True)
+        for button in pressure_plates:
+            #if touching a button
+            if self.get_rect().colliderect(button.rect):
+                #print("Touching a Button")
+                button.active = True
+                for door in doors:
+                    door.open = True
         
 
     #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
     def render(self,colour = (0, 0, 255),collisions = False):
         
+        #if collisions are enabled (only on players)
         if collisions:
             self.detectCollisions()
 
@@ -180,10 +180,44 @@ class Sprite:
         self.moveX = 0
         self.moveY = 0
 
+
+
+class Pressure_Plate:
+    def __init__(self,rect):
+        self.rect = rect
+        #self.id = id
+        self.active = False
+
+    def render(self):
+        colour = ()
+        #print(self.active)
+
+        #if it is pressed down in this frame
+        if self.active:
+            #make it green
+            colour = (0,100,0)
+        else:
+            #make it red
+            colour = (100,0,0)
+        
+        pygame.draw.rect(screen, colour, self.rect)
+
+class Door:
+    def __init__(self,rect):
+        self.rect = rect
+        self.open = False
+    
+    def render(self):
+        if self.open == False:
+            pygame.draw.rect(screen, (255,255,255), self.rect)
+
+
+# Main
 def main():
     global obstacles
     global current_level # current_level is the level that will constantly be displayed
     global Players
+    global pressure_plates
 
     current_level = testing_level
     Players = get_player_sprite(current_level) # returns a list of [Player0,Player1]
@@ -286,9 +320,18 @@ def main():
 
         Player1.render((255,0,0),True)
 
+        for button in pressure_plates:
+            button.render()
+        
+        for door in doors:
+            door.render()
+
         #pygame.draw.rect(screen, (0, 0, 255), (Player0.x,Player0.y,Player0.w,Player0.h))
+
+        #refresh display
         pygame.display.flip()
 
+        #make each frame stay for 50 miliseconds
         clock.tick(50)
         
 
@@ -353,6 +396,9 @@ def draw_stone_background():
             else:
                 pygame.draw.rect(screen, brick_colour, (x-30, y, 56, 26))
 
+
+
+
 # draws a small torch
 def draw_torch(x,y):
     wood_colour = (60,40,0)
@@ -363,6 +409,9 @@ def draw_torch(x,y):
     pygame.draw.rect(screen, outer_flame_colour, (x+19, y+8, 12, 12))
     pygame.draw.rect(screen, centre_flame_colour, (x+21, y+12, 8, 8))
 
+
+
+
 # draws the exit door
 def draw_door(x,y):
     wood_colour = (60,40,0)
@@ -370,6 +419,9 @@ def draw_door(x,y):
 
     pygame.draw.rect(screen, wood_colour, (x, y, 50, 50))
     pygame.draw.rect(screen, black_colour, (x+10, y+10, 30, 40))
+
+
+
 
 # DONT USE THIS ONE, USE THE ONE BELOW
 # get the location of the player starting position (SPRITE). can use for any map
@@ -383,6 +435,9 @@ def get_player_sprite(current_level):
                 Player1 = Sprite(x*50, y*50, 40, 50)
     Players = [Player0,Player1]
     return Players
+
+
+
 
 #USE THIS ONE
 def reset_players(current_level):
@@ -401,6 +456,9 @@ def reset_players(current_level):
                 Players[1].y = y*50
     return Players
 
+
+
+
 #returns the coordinates of the door to exit the map
 def get_door_location(current_level):
     for y in range(len(current_level)):
@@ -411,20 +469,6 @@ def get_door_location(current_level):
     return door
 
 
-def render_pressure_plates(plate,collision):
-    global pressure_plates
-
-    for block in pressure_plates:
-        #if nobody is touching it
-        if collision == False:
-            block.h = 10
-            block.y -= 5
-            block.render((100, 50, 50))
-        else:
-            block.h = 5
-            block.y += 5
-            block.render((50, 100, 50))
-        
 
 
 #Displays the chosen level to the user
@@ -466,12 +510,12 @@ def render_level(level):
             
             #add pressure plates to their respective lists
             if level[y][x] == "_":
-                pressure_plates.append(Sprite(x*50,y*50 + 40,50,10))
+                pressure_plates.append(Pressure_Plate((x*50,y*50 + 40,50,20)))
             
             #add doors to their respective lists
             if level[y][x] == "|":
                 obstacles.append(Sprite(x*50,y*50,50,50))
-                doors.append(Sprite(x*50,y*50,50,50))
+                doors.append(Door((x*50,y*50,50,50)))
 
     
     # render in special collidable blocks
@@ -487,12 +531,6 @@ def render_level(level):
         block.y += 10
         block.h -= 10
         block.render((50, 50, 200))
-    
-    for block in doors:
-        block.render((255, 255, 255))
-
-    for block in pressure_plates:
-        render_pressure_plates(block,False)
 
 main()
 
