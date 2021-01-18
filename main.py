@@ -71,13 +71,15 @@ def check_events(key_list):
 
 
 class Sprite:
-    def __init__(self, x, y, w, h,moveX = 0,moveY = 0):
+    def __init__(self, x, y, w, h,door = "",button = ""):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.moveX = moveX
-        self.moveY = moveY
+        self.moveX = 0
+        self.moveY = 0
+        self.door = door
+        self.button = button
         self.jumping = False
         self.can_jump = True
     
@@ -155,7 +157,14 @@ class Sprite:
                     print("Restarting Level...")
                     #restart the level
                     reset_players(current_level)
-                    
+        
+        for plate in pressure_plates:
+            #if colliding with a pressure plate
+            if self.get_rect().colliderect(plate.get_rect()):
+                #if self is one of the Players
+                if self == Players[0] or self == Players[1]:
+                    render_pressure_plates(plate,True)
+        
 
     #JOEL REMEMBER TO ADD COMMENTS TO THIS FUNCTION ITS IMPORTANT
     def render(self,colour = (0, 0, 255),collisions = False):
@@ -400,7 +409,24 @@ def get_door_location(current_level):
             if current_level[y][x] == "E":
                 door = (x*50, y*50)
     return door
-    
+
+
+def render_pressure_plates(plate,collision):
+    global pressure_plates
+
+    for block in pressure_plates:
+        #if nobody is touching it
+        if collision == False:
+            block.h = 10
+            block.y -= 5
+            block.render((100, 50, 50))
+        else:
+            block.h = 5
+            block.y += 5
+            block.render((50, 100, 50))
+        
+
+
 #Displays the chosen level to the user
 def render_level(level):
     global current_level
@@ -461,12 +487,12 @@ def render_level(level):
         block.y += 10
         block.h -= 10
         block.render((50, 50, 200))
-
-    for block in pressure_plates:
-        block.render((100, 50, 50))
     
     for block in doors:
         block.render((255, 255, 255))
+
+    for block in pressure_plates:
+        render_pressure_plates(block,False)
 
 main()
 
