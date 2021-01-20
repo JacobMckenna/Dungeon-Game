@@ -161,6 +161,19 @@ class Sprite:
             self.can_jump = False #sprite can not jump right away
 
 
+# moved here from level_design because it didnt know what sprite was
+# DONT USE THIS ONE, USE THE ONE BELOW
+# get the location of the player starting position (SPRITE).
+def create_player_sprite(current_level):
+    for y in range(len(current_level)):
+        for x in range(len(current_level[0])):
+            
+            if current_level[y][x] == "0":
+                Player0 = Sprite(x*50, y*50, 40, 50) #player width and height data is stored here
+            if current_level[y][x] == "1":
+                Player1 = Sprite(x*50, y*50, 40, 50)
+    Players = [Player0,Player1]
+    return Players
 
 
 
