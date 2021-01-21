@@ -1,5 +1,5 @@
 
-Import everythig from global_variables file
+Import everything from global_variables file
 
 Create class Button that inherits class pygame.Rect
 
