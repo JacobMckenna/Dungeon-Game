@@ -104,14 +104,14 @@ class Sprite:
                     print("Restarting Level...")
                     #restart the level
 
-                    # reset_players(current_level)
-                    for y in range(len(current_level)):
-                        #for every value in the column
-                        for x in range(len(current_level[0])):
-                            # "0" is the key for Player0 spawn
-                            if current_level[y][x] == "0":
-                                Players[0].x = x*50
-                                Players[0].y = y*50
+                    level_design.reset_players(current_level)
+                    # for y in range(len(current_level)):
+                    #     #for every value in the column
+                    #     for x in range(len(current_level[0])):
+                    #         # "0" is the key for Player0 spawn
+                    #         if current_level[y][x] == "0":
+                    #             Players[0].x = x*50
+                    #             Players[0].y = y*50
         # print(current_level)
 
         #go through all the blue only squares
@@ -123,14 +123,14 @@ class Sprite:
                     print("Restarting Level...")
                     #restart the level
 
-                    # reset_players(current_level)
-                    for y in range(len(current_level)):
-                        #for every value in the column
-                        for x in range(len(current_level[0])):
-                            # "1" is the key for Player1 spawn
-                            if current_level[y][x] == "1":
-                                Players[1].x = x*50
-                                Players[1].y = y*50
+                    level_design.reset_players(current_level)
+                    # for y in range(len(current_level)):
+                    #     #for every value in the column
+                    #     for x in range(len(current_level[0])):
+                    #         # "1" is the key for Player1 spawn
+                    #         if current_level[y][x] == "1":
+                    #             Players[1].x = x*50
+                    #             Players[1].y = y*50
 
         #go through every pressure plate
         for button in pressure_plates:

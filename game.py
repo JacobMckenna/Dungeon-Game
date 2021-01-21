@@ -104,6 +104,8 @@ def main_game(events, level_num, Player0, Player1):
     if Player0.left_level and Player1.left_level: #if both are standing in exit
         print("Travelling to level",level_num + 1)
         Player0,Player1 = reset_players(current_level)
+        Player0.left_level = False
+        Player1.left_level = False
         return ['menu', level_num + 1]
 
     return ['game', level_num]

@@ -26,7 +26,6 @@ def main():
 
     Player0, Player1 = create_player_sprite(current_level) # returns a list of [Player0,Player1]
 
-
     # Main loop.
     running = True
     while running:
