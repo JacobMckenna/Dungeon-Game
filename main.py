@@ -3,152 +3,50 @@
 #main.py
 #Runs the main code for the game and uses functions from all files.
 
-#Import Pygame
-import pygame
-#import global_variables
-#import level_design
-
 #Import Other Files
 from global_variables import *
 from classes import *
 from level_design import *
+from game import *
+from menu import *
 
-#global_variables.init()
-#pygame.init()
+# Play intial music.
+# pygame.mixer.music.load(music_dict[current_music])
+# pygame.mixer.music.play(-1)
 
 #test cases
-test = Sprite(100,48,39,19)
-print(test.y)
-print(pineapple)
-#clock = pygame.time.Clock()
-
-#List Variables
-#global current_level
-obstacles = []
-
-# Set up the drawing window
-screen = pygame.display.set_mode([1000, 800])
-
-
-def check_events(key_list):
-
-    #check all events that happened in this frame
-    for event in pygame.event.get():
-
-        # was a key just pressed down?
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w: #if pressed w
-                #make the player jump
-                key_list[0] = True
-            if event.key == pygame.K_a: #if pressed a
-                key_list[1] = True
-            if event.key == pygame.K_d: #if pressed d
-                key_list[2] = True
-            if event.key == pygame.K_UP: #if pressed up
-                #make the player jump
-                key_list[3] = True
-            if event.key == pygame.K_LEFT: #if pressed left
-                key_list[4] = True
-            if event.key == pygame.K_RIGHT: #if pressed right
-                key_list[5] = True
-
-        # was a key just let go?
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_w: #if just stopped pressing w
-                #stops jumping
-                key_list[0] = False
-            if event.key == pygame.K_a: #if just stopped pressing a
-                key_list[1] = False
-            if event.key == pygame.K_d: #if just stopped pressing d
-                key_list[2] = False
-            if event.key == pygame.K_UP: #if just stopped pressing up
-                #stops jumping
-                key_list[3] = False
-            if event.key == pygame.K_LEFT: #if just stopped pressing left
-                key_list[4] = False
-            if event.key == pygame.K_RIGHT: #if just stopped pressing right
-                key_list[5] = False
-        
-        # Did the user click the window close button?
-        if event.type == pygame.QUIT:
-            #quit the program
-            pygame.quit()
-    
-    #return a list of all significant keys (either True or False for each)
-    return key_list
+# test = Sprite(100,48,39,19)
+# print(test.y)
+# print(pineapple)
 
 # Main
 def main():
-    global obstacles
-    global current_level # current_level is the level that will constantly be displayed
-    global Players
-    global pressure_plates
+    global game_state
+    global level_num
 
-    #i dont think this is needed anymore
-    current_level = get_testing_level()
+    Player0, Player1 = create_player_sprite(current_level) # returns a list of [Player0,Player1]
 
-    Players = create_player_sprite(current_level) # returns a list of [Player0,Player1]
-    
-    #changes player0 and player1 to nicer variables
-    Player0 = Players[0]
-    Player1 = Players[1]
 
-    #keys are w,a,d,up,left,right
-    key_list = [False,False,False,False,False,False]
+    # Main loop.
+    running = True
+    while running:
+        # Capture events and check if user chose to close the program.
+        events = pygame.event.get()
+        for event in events:
+            # If the user pressed to close the window then stop the program.
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                running = False
 
-    # Run until the user asks to quit
-    while True:
+        # Check if the user is in the menu or in game.
+        if game_state == "menu":
+            game_state, level_num = main_menu(events, level_num)
+        elif game_state == "game":
+            main_game(events, level_num, Player0, Player1)
+        else:
+            running = False
+            pygame.quit()
 
-        #draws the stone brick background
-        draw_stone_background()
-
-        #check for any events this frame
-        key_list = check_events(key_list)
-        
-        ###########
-        # JUMPING #
-        ###########
-        
-        #if pressing "w"
-        if key_list[0] == True and Player0.can_jump == True:
-            #make player 0 jump
-            Player0.jump()
-        else: #apply gravity
-            Player0.moveY = Player0.moveY + 5
-        
-        #if pressing "up"
-        if key_list[3] == True and Player1.can_jump == True:
-            #make player 1 jump
-            Player1.jump()
-        else: #apply gravity
-            Player1.moveY = Player1.moveY + 5
-        
-        ############
-        # CONTROLS #
-        ############
-
-        if key_list[1] == True: #if pressing a
-            Player0.moveX = Player0.moveX - 5 #move left
-        elif key_list[2] == True: #if pressing d
-            Player0.moveX = Player0.moveX + 5 #move right
-        
-        if key_list[4] == True: #if pressing left
-            Player1.moveX = Player1.moveX - 5 #move left
-        elif key_list[5] == True: #if pressing right
-            Player1.moveX = Player1.moveX + 5 #move right
-        
-        #display the current level
-        render_level(current_level)
-
-        #render the players in the map
-        Player0.render((0,0,255),True)
-        Player1.render((255,0,0),True)
-
-        #render the buttons and doors
-        for button in pressure_plates:
-            button.render()
-        for door in doors:
-            door.render()
 
         #refresh display
         pygame.display.flip()
@@ -157,5 +55,3 @@ def main():
         clock.tick(50)
 
 main()
-
-pygame.quit()
