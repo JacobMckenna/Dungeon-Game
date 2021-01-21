@@ -53,6 +53,7 @@ events = pygame
 
 
 #global screen
+# pineapple is a test variable to make sure global_variables.py is working properly.
 pineapple = "yes"
 #List of variables to be used across all files.
 
@@ -74,6 +75,20 @@ red_only = []
 blue_only = []
 pressure_plates = []
 doors = []
+
+
+# MAP LEGEND
+
+# "." = open sapce
+# "x" = map barrier --  CANNOT HAVE 1 BLOCK GAPS OR CAN JUMP THROUGH
+# "E" = exit
+# "R" = red only area
+# "B" = blue only area
+# "0" = player 0 start
+# "1" = player 1 start
+# "i" = decoration torch
+# "_" = pressure plate
+# "|" = vertical door (shift + \ NOT capital "i")
 
 #testing level to test the features
 testing_level = [
