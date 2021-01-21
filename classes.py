@@ -142,7 +142,7 @@ class Sprite:
                 for door in doors:
                     #set door to open
                     door.open = True
-        
+                    
         exit = level_design.get_exit_location(current_level)
         if self.get_rect().colliderect((exit[0], exit[1], 50, 50)):
             self.left_level = True

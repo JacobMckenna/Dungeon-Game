@@ -87,11 +87,13 @@ def json_levels(unlocked = False):
                 break
 
         # Write changes to json file.
-        with open('levels.json', 'w') as file:
+        with open('./assets/json/levels.json', 'w') as file:
             json.dump(data, file, indent = 2)
 
         # Update level selection.
         level_btns()
+
+        print(data)
 
     return data
 
