@@ -28,7 +28,7 @@ def draw_stone_background():
     global screen
     screen.fill((0,0,0))
     brick_colour = (75,75,75)
-    
+
     #uses a nested for loop to draw each brick in rows then stack the rows below eachother
     for y in range(0,800,30):
         for x in range(0,1000,60):
@@ -52,7 +52,7 @@ def draw_torch(x,y):
         The y coordinate where the torch is going to be drawn from on the screen.
 
     """
-    
+
     # Colour palette to be used to make the torch.
     wood_colour = (60,40,0)
     centre_flame_colour = (200,90,0)
@@ -75,7 +75,7 @@ def draw_exit(x,y):
     y : integer
         The y coordinate where the exit is going to be drawn from on the screen.
     """
-    
+
     # Colour palette to be used to make the exit.
     wood_colour = (60,40,0)
     black_colour = (0,0,0)
@@ -85,7 +85,7 @@ def draw_exit(x,y):
     pygame.draw.rect(screen, black_colour, (x+10, y+10, 30, 40))
 
 # Resets the players locations to the designated locations in the level
-def reset_players(current_level):
+def reset_players(current_level, Players):
     """
     Takes in the level, and finds the player start locations in the level. The program then sets each players x and y to those locations in the level and returns those player locations as a list.
 
@@ -93,14 +93,13 @@ def reset_players(current_level):
     ----------
     current_level : matrix
         The level that the player start locations are going to be taken from.
-        
+
     Returns
     -------
     Players : list
         A list containing the x and y coordinates for each player.
 
     """
-    global Players
     # Use a nested for loop to divide the level into individual values.
     for y in range(len(current_level)):
         for x in range(len(current_level[0])):
@@ -116,7 +115,7 @@ def reset_players(current_level):
                 # If yes, create new x and y coordinates for Player1
                 Players[1].x = x*50
                 Players[1].y = y*50
-                
+
     # Return finalized Players list
     return Players
 
@@ -129,7 +128,7 @@ def get_exit_location(current_level):
     ----------
     current_level : matrix
         The level that the exit locations is going to be found from.
-        
+
     Returns
     -------
     exit : list
@@ -140,12 +139,12 @@ def get_exit_location(current_level):
     # Use a nested for loop to divide the level into individual values.
     for y in range(len(current_level)):
         for x in range(len(current_level[0])):
-               
+
             # Check if the value is "E"
             # "E" is the key for exit
             if current_level[y][x] == "E":
                 exit = [x*50, y*50]
-                
+
     # Return the list of exits
     return exit
 
@@ -163,7 +162,7 @@ def modify_level(old_value, new_value):
 
     """
     global current_level
-    
+
     # Use a nested for loop to divide the level into individual values.
     for y in range(len(current_level)):
         for x in range(len(current_level[0])):
@@ -194,7 +193,7 @@ def render_block_list(list_to_render, R, G, B, height=0):
         # Add or remove any addition height requested
         block.y += height
         block.h -= height
-        
+
         # Render the block with its RGB colour value.
         block.render((R, G, B))
 
@@ -210,7 +209,7 @@ def render_level(level, level_num):
         The level that is going to be rendered on the screen.
     level_num : integer
         The number of the current level being displayed.
-        
+
     Returns
     -------
     obstacles : list
@@ -225,7 +224,7 @@ def render_level(level, level_num):
         A list of all the doors that will be opened in the level if a player is standing on a pressure plate.
 
     """
-    
+
     # Decalare global variables used in the function.
     global current_level
     global obstacles
@@ -256,7 +255,7 @@ def render_level(level, level_num):
     #                Players[1].x = x*50
     #                Players[1].y = y*50
     current_level = level
-    
+
     # Add each part of the map to its respective lists with their locaitons.
     # Use a nested for loop to divide the level into individual values.
     for y in range(len(level)):
@@ -301,6 +300,6 @@ def render_level(level, level_num):
     # Button(text, type, click, can_hover, x, y, w, h, colour, bg, font)
     btn_score = Button(f"Lvl:{level_num}", "", "", False, 440, 5, 120, 40, (200, 200, 200), (50, 50, 50), 34)
     btn_score.render()
-       
+
     # Return the block lists.
     return obstacles, red_only, blue_only, pressure_plates, doors

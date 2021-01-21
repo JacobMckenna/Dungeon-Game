@@ -47,11 +47,6 @@ events = pygame
 
 
 
-
-
-
-
-
 #global screen
 # pineapple is a test variable to make sure global_variables.py is working properly.
 pineapple = "yes"
@@ -68,11 +63,14 @@ pygame.init()
 screen = pygame.display.set_mode([1000, 800])
 clock = pygame.time.Clock()
 
+
+
 obstacles = []
 red_only = []
 blue_only = []
 pressure_plates = []
 doors = []
+
 
 # MAP LEGEND
 
