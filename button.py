@@ -139,14 +139,14 @@ class Button(pygame.Rect):
         # Check if hovered.
         if self.hovered and self.can_hover:
             # Draw the rectangle.
-            pygame.draw.rect(screen, self.colour, self.rect, 0, 5)
+            pygame.draw.rect(screen, self.colour, self.rect, 5)
             # Draw the font.
             screen.blit(self.font_render_hover, self.font_dimen)
 
         # Regular state (not hovered).
         else:
             # Draw the rectangle.
-            pygame.draw.rect(screen, self.bg, self.rect, 0, 5)
+            pygame.draw.rect(screen, self.bg, self.rect, 5)
             # Draw the font.
             screen.blit(self.font_render, self.font_dimen)
 

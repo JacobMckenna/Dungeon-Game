@@ -42,7 +42,7 @@ def main():
         if game_state == "menu":
             game_state, level_num = main_menu(events, level_num)
         elif game_state == "game":
-            main_game(events, level_num, Player0, Player1)
+            game_state, level_num = main_game(events, level_num, Player0, Player1)
         else:
             running = False
             pygame.quit()
