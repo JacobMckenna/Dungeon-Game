@@ -40,7 +40,9 @@ def main():
 
         # Check if the user is in the menu or in game.
         if game_state == "menu":
-            game_state, level_num = main_menu(events, level_num)
+            game_state, new_level = main_menu(events, level_num)
+            if new_level != level_num:
+                json_levels(True)
         elif game_state == "game":
             game_state, level_num = main_game(events, level_num, Player0, Player1)
         else:
