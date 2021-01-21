@@ -24,6 +24,8 @@ class Sprite:
         self.velocity = 5
         self.jumping = False #the player is not starting jumping
         self.can_jump = True #the player is able to jump
+        
+        self.left_level = False #if the player is at the exit
 
         # whether object is a player
         self.player = player
@@ -140,6 +142,10 @@ class Sprite:
                 for door in doors:
                     #set door to open
                     door.open = True
+        
+        exit = get_exit_location(current_level)
+        if self.get_rect().colliderect((exit[1], exit[2], 50, 50)):
+            self.left_level = True
 
 
     def render(self, colour = (0, 0, 255),collisions = False, blocks = (), players = []):

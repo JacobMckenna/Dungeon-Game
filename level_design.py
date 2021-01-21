@@ -20,7 +20,8 @@ from button import *
 # "1" = player 1 start
 # "i" = decoration torch
 # "_" = pressure plate
-# "|" = vertical door (shift + \ NOT capital "i")
+# "|" = door (shift + \ NOT capital "i")
+# "/" = open door
 
 # Draws a stone background on the screen to add some decoration and to make the game look nicer
 def draw_stone_background():
