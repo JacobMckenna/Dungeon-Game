@@ -100,3 +100,7 @@ def main_game(events, level_num, Player0, Player1):
         button.render()
     for door in doors:
         door.render()
+    
+    if Player0.left_level and Player1.left_level: #if both are standing in exit
+        print("Travelling to level",level_num + 1)
+        return ['menu', level_num + 1]

@@ -136,6 +136,7 @@ def get_exit_location(current_level):
         A list of the coordinates of all exit locations in the level.
 
     """
+    exit = []
     # Use a nested for loop to divide the level into individual values.
     for y in range(len(current_level)):
         for x in range(len(current_level[0])):
@@ -143,7 +144,7 @@ def get_exit_location(current_level):
             # Check if the value is "E"
             # "E" is the key for exit
             if current_level[y][x] == "E":
-                exit = (x*50, y*50)
+                exit = [x*50, y*50]
                 
     # Return the list of exits
     return exit

@@ -143,8 +143,8 @@ class Sprite:
                     #set door to open
                     door.open = True
         
-        exit = get_exit_location(current_level)
-        if self.get_rect().colliderect((exit[1], exit[2], 50, 50)):
+        exit = level_design.get_exit_location(current_level)
+        if self.get_rect().colliderect((exit[0], exit[1], 50, 50)):
             self.left_level = True
 
 
@@ -252,6 +252,8 @@ class Door:
             #draw a rectagle where the door is
             pygame.draw.rect(screen, (255,255,255), self.rect)
 
-            modify_level("/","|") #replace all "/" (open door) with "|" (closed door)
+            level_design.modify_level("/","|") #replace all "/" (open door) with "|" (closed door)
         else: #if the door is open
-            modify_level("|","/")#replace all "|" (open door) with "/" (closed door)
+            level_design.modify_level("|","/")#replace all "|" (open door) with "/" (closed door)
+
+import level_design
