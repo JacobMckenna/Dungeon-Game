@@ -14,7 +14,7 @@ SCREEN_DIMEN = [1000, 800]
 level_num = 1
 
 # Program state
-game_state = "game"
+game_state = "menu"
 
 # Keys reference
 #keys are w,a,d,up,left,right

@@ -295,8 +295,8 @@ def render_level(level, level_num):
 
     # Render the blocks in each list.
     render_block_list(obstacles, 150, 150, 150)
-    render_block_list(red_only, 200, 50, 50, 10)
-    render_block_list(blue_only, 50, 50, 200, 10)
+    render_block_list(red_only, 200, 50, 50, 25)
+    render_block_list(blue_only, 50, 50, 200, 25)
 
     # Button(text, type, click, can_hover, x, y, w, h, colour, bg, font)
     btn_score = Button(f"Lvl:{level_num}", "", "", False, 440, 5, 120, 40, (200, 200, 200), (50, 50, 50), 34)
