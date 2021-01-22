@@ -111,7 +111,7 @@ def main_game(events, level_num, Player0, Player1):
         for i in range(0,len(key_list)):
             key_list[i] = False
             
-        return ['menu', level_num + 1]
+        return ['menu', level_num]
 
     #print(level_num)
 

@@ -49,6 +49,7 @@ def main_menu(events, level_num):
     global current_page
     # global level_num
     global current_music
+    global current_level
 
     render_btns(pygame, screen, img_bg[current_page], page_btns[current_page])
 

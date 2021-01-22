@@ -85,7 +85,7 @@ def draw_exit(x,y):
     pygame.draw.rect(screen, black_colour, (x+10, y+10, 30, 40))
 
 # Resets the players locations to the designated locations in the level
-def reset_players(current_level):
+def reset_players(current_level, Players):
     """
     Takes in the level, and finds the player start locations in the level. The program then sets each players x and y to those locations in the level and returns those player locations as a list.
 
@@ -241,8 +241,8 @@ def render_level(level, level_num):
     doors = []
 
     # Reset player locations if the level being displayed has changed.
-    if level != current_level:
-        reset_players(level)
+    #if level != current_level:
+    #    reset_players(level)
     #    for y in range(len(current_level)):
     #        #for every value in the column
     #        for x in range(len(current_level[0])):
@@ -254,7 +254,8 @@ def render_level(level, level_num):
     #            if current_level[y][x] == "1":
     #                Players[1].x = x*50
     #                Players[1].y = y*50
-    current_level = level
+    current_level = levels[level_num-1]
+    level = levels[level_num-1]
 
     # Add each part of the map to its respective lists with their locaitons.
     # Use a nested for loop to divide the level into individual values.
