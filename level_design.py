@@ -85,7 +85,7 @@ def draw_exit(x,y):
     pygame.draw.rect(screen, black_colour, (x+10, y+10, 30, 40))
 
 # Resets the players locations to the designated locations in the level
-def reset_players(current_level, Players):
+def reset_players(current_level):
     """
     Takes in the level, and finds the player start locations in the level. The program then sets each players x and y to those locations in the level and returns those player locations as a list.
 
