@@ -112,6 +112,9 @@ class Sprite:
                             if current_level[y][x] == "0":
                                 Players[0].x = x*50
                                 Players[0].y = y*50
+                            if current_level[y][x] == "1":
+                                Players[1].x = x*50
+                                Players[1].y = y*50
         # print(current_level)
 
         #go through all the blue only squares
@@ -128,6 +131,9 @@ class Sprite:
                         #for every value in the column
                         for x in range(len(current_level[0])):
                             # "1" is the key for Player1 spawn
+                            if current_level[y][x] == "0":
+                                Players[0].x = x*50
+                                Players[0].y = y*50
                             if current_level[y][x] == "1":
                                 Players[1].x = x*50
                                 Players[1].y = y*50
