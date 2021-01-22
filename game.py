@@ -96,9 +96,9 @@ def main_game(events, level_num, Player0, Player1):
     Player1.render((255,0,0),True, blocks, players)
 
     #render the buttons and doors
-    for button in pressure_plates:
+    for button in blocks[3]:
         button.render()
-    for door in doors:
+    for door in blocks[4]:
         door.render()
 
     if Player0.left_level and Player1.left_level: #if both are standing in exit
