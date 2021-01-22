@@ -104,7 +104,7 @@ class Sprite:
                     print("Restarting Level...")
                     #restart the level
 
-                    # reset_players(current_level)
+                    #level_design.reset_players(current_level)
                     for y in range(len(current_level)):
                         #for every value in the column
                         for x in range(len(current_level[0])):
@@ -123,7 +123,7 @@ class Sprite:
                     print("Restarting Level...")
                     #restart the level
 
-                    # reset_players(current_level)
+                    # level_design.reset_players(current_level)
                     for y in range(len(current_level)):
                         #for every value in the column
                         for x in range(len(current_level[0])):

@@ -87,8 +87,9 @@ def main_game(events, level_num, Player0, Player1):
     elif key_list[5] == True: #if pressing right
         Player1.moveX = Player1.moveX + 5 #move right
 
-    #display the current level
     blocks = render_level(current_level, level_num)
+
+    #display the current level
     players = [Player0, Player1]
 
     #render the players in the map
@@ -96,8 +97,8 @@ def main_game(events, level_num, Player0, Player1):
     Player1.render((255,0,0),True, blocks, players)
 
     #render the buttons and doors
-    for button in blocks[3]:
-        button.render()
+    for plate in blocks[3]:
+        plate.render()
     for door in blocks[4]:
         door.render()
 
@@ -112,6 +113,6 @@ def main_game(events, level_num, Player0, Player1):
             
         return ['menu', level_num + 1]
 
-    print(level_num)
+    #print(level_num)
 
     return ['game', level_num]
