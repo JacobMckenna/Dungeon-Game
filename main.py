@@ -1,5 +1,5 @@
 #Jacob Mckenna, Joel Harder, Omar El Mabrouk
-#Created Jan 7, 2021
+#Due Jan 22, 2021
 #main.py
 #Runs the main code for the game and uses functions from all files.
 
@@ -11,23 +11,21 @@ from game import *
 from menu import *
 
 # Play intial music.
-# pygame.mixer.music.load(music_dict[current_music])
-# pygame.mixer.music.play(-1)
+pygame.mixer.music.load(music_dict[current_music])
+pygame.mixer.music.play(-1)
 
-#test cases
-# test = Sprite(100,48,39,19)
-# print(test.y)
-# print(pineapple)
-
-# Main
+# Main function that calls the other main functions.
 def main():
     global game_state
     global level_num
 
+    # Create the two players
     Player0, Player1 = create_player_sprite(current_level) # returns a list of [Player0,Player1]
+
     # Main loop.
     running = True
     while running:
+
         # Capture events and check if user chose to close the program.
         events = pygame.event.get()
         for event in events:
@@ -37,23 +35,29 @@ def main():
                 running = False
 
         # Check if the user is in the menu or in game.
+
+        # In the menu, call main_menu().
         if game_state == "menu":
             game_state, level_num = main_menu(events, level_num)
+
+        # In the game, call main_game() and update json level if succeeded.
         elif game_state == "game":
             game_state, new_level = main_game(events, level_num, Player0, Player1)
             if new_level != level_num:
-                #print(game_state, new_level, level_num)
                 level_num = new_level
                 json_levels(True)
+
+        # Not supposed to happen, quit to troubleshoot.
         else:
             running = False
             pygame.quit()
 
 
-        #refresh display
+        # Refresh display.
         pygame.display.flip()
 
-        #make each frame stay for 50 miliseconds
+        # Make each frame stay for 50 miliseconds.
         clock.tick(50)
 
-main()
+if __name__ == '__main__':
+    main()

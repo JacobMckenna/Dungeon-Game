@@ -1,3 +1,7 @@
+#Jacob Mckenna, Joel Harder, Omar El Mabrouk
+#Due Jan 22, 2021
+#menu_render.py
+#Draws the background image and buttons to the screen.
 
 # Import local modules.
 from button import *
