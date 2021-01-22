@@ -133,11 +133,11 @@ class Sprite:
                                 Players[1].y = y*50
 
         #go through every pressure plate
-        for button in pressure_plates:
+        for plate in pressure_plates:
             #if touching a button
-            if self.get_rect().colliderect(button.rect):
+            if self.get_rect().colliderect(plate.rect):
                 #print("Touching a Button")
-                button.active = True
+                plate.active = True
 
                 for door in doors:
                     #set door to open
