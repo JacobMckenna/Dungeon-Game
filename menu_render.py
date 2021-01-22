@@ -172,7 +172,7 @@ def level_btns():
     del page_btns['settings'][13:len(data_lis)]
 
     # Split data to x columns and y rows.
-    columns = split_list(data_lis, 2)
+    columns = split_list(data_lis, 1)
     rows = split_list(columns, 3)
 
 
