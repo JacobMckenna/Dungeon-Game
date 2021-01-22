@@ -239,6 +239,7 @@ def render_level(level, level_num):
     blue_only = []
     pressure_plates = []
     doors = []
+    exits = []
 
     current_level = levels[level_num-1]
     level = levels[level_num-1]
@@ -255,6 +256,7 @@ def render_level(level, level_num):
             # Render the exit.
             elif level[y][x] == "E":
                 draw_exit(x*50,y*50)
+                exits = (x*50,y*50)
 
             # Render torches.
             elif level[y][x] == "i":
@@ -292,4 +294,4 @@ def render_level(level, level_num):
     btn_score.render()
 
     # Return the block lists.
-    return obstacles, red_only, blue_only, pressure_plates, doors
+    return obstacles, red_only, blue_only, pressure_plates, doors, exits

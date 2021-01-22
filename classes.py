@@ -44,6 +44,7 @@ class Sprite:
         blue_only = blocks[2]
         pressure_plates = blocks[3]
         doors = blocks[4]
+        exits = blocks[5]
 
         #loop through all walls/floors
         for i in obstacles:
@@ -149,8 +150,7 @@ class Sprite:
                     #set door to open
                     door.open = True
         
-        exit = level_design.get_exit_location(current_level)
-        if self.get_rect().colliderect((exit[0], exit[1], 50, 50)):
+        if self.get_rect().colliderect((exits[0], exits[1], 50, 50)):
             self.left_level = True
         else:
             self.left_level = False
