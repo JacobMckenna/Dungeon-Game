@@ -188,15 +188,15 @@ class Sprite:
         self.moveY -= F
 
         # constantly reduce velocity (therefore making it an arc shaped jump)
-        self.velocity = self.velocity-1
+        self.velocity -= 1
 
         # object reached its maximum height
-        if self.velocity < 0:
-            # negative sign is added to counter negative velocity
-            self.mass = -0.1
+        # if self.velocity < 0:
+        #     # negative sign is added to counter negative velocity
+        #     self.mass = -4
 
         # object is where is began
-        if self.velocity == -6:
+        if self.velocity == 0:
             #reset mass and velocity now that the jump is finished
             self.mass,self.velocity = 4,5
             self.jumping = False #sprite is no longer jumping
