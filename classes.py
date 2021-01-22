@@ -146,6 +146,8 @@ class Sprite:
         exit = level_design.get_exit_location(current_level)
         if self.get_rect().colliderect((exit[0], exit[1], 50, 50)):
             self.left_level = True
+        else:
+            self.left_level = False
 
 
     def render(self, colour = (0, 0, 255),collisions = False, blocks = (), players = []):
