@@ -69,7 +69,7 @@ def main_menu(events, level_num):
             # User is still in menu, update any new page/music/level.
             current_page = update[0]
             level_num = update[2]
-            print(level_num)
+            #print(level_num)
 
             # If a different music is picked.
             if current_music != update[1]:

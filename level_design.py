@@ -240,20 +240,6 @@ def render_level(level, level_num):
     pressure_plates = []
     doors = []
 
-    # Reset player locations if the level being displayed has changed.
-    #if level != current_level:
-    #    reset_players(level)
-    #    for y in range(len(current_level)):
-    #        #for every value in the column
-    #        for x in range(len(current_level[0])):
-    #            # "0" is the key for Player0 spawn
-    #            if current_level[y][x] == "0":
-    #                Players[0].x = x*50
-    #                Players[0].y = y*50
-    #            # "1" is the key for Player1 spawn
-    #            if current_level[y][x] == "1":
-    #                Players[1].x = x*50
-    #                Players[1].y = y*50
     current_level = levels[level_num-1]
     level = levels[level_num-1]
 
