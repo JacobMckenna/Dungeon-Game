@@ -281,7 +281,7 @@ def render_level(level, level_num):
 
             # Add pressure plates to their respective lists.
             elif level[y][x] == "_":
-                pressure_plates.append(Pressure_Plate((x*50,y*50 + 40,50,20)))
+                pressure_plates.append(Pressure_Plate((x*50,y*50 + 30,50,20)))
 
             # Add closed doors to the door and obstacle list.
             elif level[y][x] == "|":
@@ -291,14 +291,14 @@ def render_level(level, level_num):
             # Add opened doors to the door list.
             elif level[y][x] == "/":
                 doors.append(Door((x*50,y*50,50,50)))
-
+    
     # Render the blocks in each list.
     render_block_list(obstacles, 150, 150, 150)
     render_block_list(red_only, 200, 50, 50, 25)
     render_block_list(blue_only, 50, 50, 200, 25)
-    
-    for plate in pressure_plates:
-        plate.render()
+
+    #for plate in pressure_plates:
+    #    plate.render()
 
     # Button(text, type, click, can_hover, x, y, w, h, colour, bg, font)
     btn_score = Button(f"Lvl:{level_num}", "", "", False, 440, 5, 120, 40, (200, 200, 200), (50, 50, 50), 34)
