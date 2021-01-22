@@ -1,118 +1,182 @@
+#Jacob Mckenna, Joel Harder, Omar El Mabrouk
+#Due Jan 22, 2021
+#game.py
+#Handles any key presses and drawing to the screen.
+
+# Import local modules.
 from global_variables import *
 from level_design import *
 
+
 def check_events(events):
+    """
+    Loops through the events and determines their type.
+
+    Parameters
+    ----------
+    events : list
+        Holds all the pygame events that occurred since last frame.
+
+    Returns
+    -------
+    key_list : list
+        List of pressed/not pressed keys.
+
+    """
 
     global key_list
-    #check all events that happened in this frame
+
+    # Loop through all the events since last frame.
     for event in events:
 
-        # was a key just pressed down?
+        # If a key was just pressed down.
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w: #if pressed w
-                #make the player jump
+            # Check which key was pressed.
+
+            if event.key == pygame.K_w: #w
+                # Make player 1 jump.
                 key_list[0] = True
-            if event.key == pygame.K_a: #if pressed a
+            if event.key == pygame.K_a: #a
+                # Make player 1 move left.
                 key_list[1] = True
-            if event.key == pygame.K_d: #if pressed d
+            if event.key == pygame.K_d: #d
+                # Make player 1 move right.
                 key_list[2] = True
-            if event.key == pygame.K_UP: #if pressed up
-                #make the player jump
+            if event.key == pygame.K_UP: #up
+                # Make player 2 jump.
                 key_list[3] = True
-            if event.key == pygame.K_LEFT: #if pressed left
+            if event.key == pygame.K_LEFT: #left
+                # Make player 2 move left.
                 key_list[4] = True
-            if event.key == pygame.K_RIGHT: #if pressed right
+            if event.key == pygame.K_RIGHT: #right
+                # Make player 2 move right.
                 key_list[5] = True
 
-        # was a key just let go?
+        # If a key was just let go.
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_w: #if just stopped pressing w
-                #stops jumping
+            # Check which key was let go.
+
+            if event.key == pygame.K_w: #w
+                # Make player 1 stop jumping.
                 key_list[0] = False
-            if event.key == pygame.K_a: #if just stopped pressing a
+            if event.key == pygame.K_a: #a
+                # Make player 1 stop moving left.
                 key_list[1] = False
-            if event.key == pygame.K_d: #if just stopped pressing d
+            if event.key == pygame.K_d: #d
+                # Make player 1 stop moving right.
                 key_list[2] = False
-            if event.key == pygame.K_UP: #if just stopped pressing up
-                #stops jumping
+            if event.key == pygame.K_UP: #up
+                # Make player 2 stop jumping.
                 key_list[3] = False
-            if event.key == pygame.K_LEFT: #if just stopped pressing left
+            if event.key == pygame.K_LEFT: #left
+                # Make player 2 top moving left.
                 key_list[4] = False
-            if event.key == pygame.K_RIGHT: #if just stopped pressing right
+            if event.key == pygame.K_RIGHT: #right
+                # Make player 2 stop moving right.
                 key_list[5] = False
 
 
-    #return a list of all significant keys (either True or False for each)
+    # Return a list of all significant keys (either True or False for each)
     return key_list
 
 
 
 def main_game(events, level_num, Player0, Player1):
+    """
+    Calls the smaller functions to handle various parts of the game.
+
+    Parameters
+    ----------
+    events : list
+        Holds all the pygame events that occurred since last frame.
+    level_num : int
+        Number representing the current level the user is on.
+    Player0 : Sprite object
+        Represents player 1.
+    Player1 : Sprite object
+        Represents player 2.
+
+    Returns
+    -------
+    List
+        Returns state of the game (in progress or finished) and level unlocked.
+
+    """
+
     global key_list
-    #draws the stone brick background
+
+    # Draws the stone brick background.
     draw_stone_background()
 
-    #check for any events this frame
+    # Check for any events this frame.
     key_list = check_events(events)
 
     ###########
     # JUMPING #
     ###########
 
-    #if pressing "w"
+    # If user is pressing "w".
     if key_list[0] == True and Player0.can_jump == True:
-        #make player 0 jump
+        # Make player 0 jump.
         Player0.jump()
-    else: #apply gravity
+    # Not pressing w, apply gravity.
+    else:
         Player0.moveY = Player0.moveY + 5
 
-    #if pressing "up"
+    # If user is pressing "up".
     if key_list[3] == True and Player1.can_jump == True:
-        #make player 1 jump
+        # Make player 1 jump
         Player1.jump()
-    else: #apply gravity
+    # Not pressing w, apply gravity.
+    else:
         Player1.moveY = Player1.moveY + 5
 
     ############
     # CONTROLS #
     ############
 
-    if key_list[1] == True: #if pressing a
+    # Apply movement depending on the key pressed.
+
+    # Player 0
+    if key_list[1] == True: #pressing a
         Player0.moveX = Player0.moveX - 5 #move left
-    elif key_list[2] == True: #if pressing d
+    elif key_list[2] == True: #pressing d
         Player0.moveX = Player0.moveX + 5 #move right
 
-    if key_list[4] == True: #if pressing left
+    # Player 1
+    if key_list[4] == True: #pressing left
         Player1.moveX = Player1.moveX - 5 #move left
-    elif key_list[5] == True: #if pressing right
+    elif key_list[5] == True: #pressing right
         Player1.moveX = Player1.moveX + 5 #move right
 
+    # Render the obstacles to the screen.
     blocks = render_level(current_level, level_num)
 
-    #display the current level
+    # Put player objects in a list for easier access.
     players = [Player0, Player1]
 
-    #render the players in the map
+    # Render the players in the map.
     Player0.render((0,0,255),True, blocks, players)
     Player1.render((255,0,0),True, blocks, players)
 
-    #render the buttons and doors
+    # Render the buttons and doors
     for plate in blocks[3]:
         plate.render()
     for door in blocks[4]:
         door.render()
 
-    if Player0.left_level and Player1.left_level: #if both are standing in exit
-        #print("Travelling to level",level_num + 1)
+    # Check if both players are standing on the exit.
+    if Player0.left_level and Player1.left_level:
+        # Reset players' positions and state.
         reset_players(current_level, [Player0, Player1])
         Player0.left_level, Player1.left_level = False, False
-        
-        #Reset key list
+
+        # Reset key list.
         for i in range(0,len(key_list)):
             key_list[i] = False
-            
-        return ['menu', level_num]
 
-    #print(level_num)
+        # Return that user finished the level, send back.
+        return ['menu', level_num + 1]
 
+    # Return that the user is still in the game.
     return ['game', level_num]

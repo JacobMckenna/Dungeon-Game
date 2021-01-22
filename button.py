@@ -1,3 +1,7 @@
+#Jacob Mckenna, Joel Harder, Omar El Mabrouk
+#Due Jan 22, 2021
+#button.py
+#Class for all the button objects.
 
 # Import local modules.
 from global_variables import *

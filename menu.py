@@ -1,3 +1,7 @@
+#Jacob Mckenna, Joel Harder, Omar El Mabrouk
+#Due Jan 22, 2021
+#menu.py
+#Handles displaying the menu and its functions.
 
 # Import local modules.
 from global_variables import *
