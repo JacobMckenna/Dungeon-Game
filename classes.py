@@ -102,7 +102,7 @@ class Sprite:
             if self.get_rect().colliderect(red.get_rect()):
                 #if it is the blue player
                 if self == Players[0]:
-                    print("Restarting Level...")
+                    #print("Restarting Level...")
                     #restart the level
 
                     #level_design.reset_players(current_level)
@@ -124,7 +124,7 @@ class Sprite:
             if self.get_rect().colliderect(blue.get_rect()):
                 #if it is the red player
                 if self == Players[1]:
-                    print("Restarting Level...")
+                    #print("Restarting Level...")
                     #restart the level
 
                     # level_design.reset_players(current_level)

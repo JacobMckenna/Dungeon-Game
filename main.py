@@ -25,7 +25,6 @@ def main():
     global level_num
 
     Player0, Player1 = create_player_sprite(current_level) # returns a list of [Player0,Player1]
-    print(Player0.x, Player0.y, Player1.x, Player1.y)
     # Main loop.
     running = True
     while running:
@@ -43,7 +42,7 @@ def main():
         elif game_state == "game":
             game_state, new_level = main_game(events, level_num, Player0, Player1)
             if new_level != level_num:
-                print(game_state, new_level, level_num)
+                #print(game_state, new_level, level_num)
                 level_num = new_level
                 json_levels(True)
         else:

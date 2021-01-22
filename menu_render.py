@@ -93,7 +93,7 @@ def json_levels(unlocked = False):
         # Update level selection.
         level_btns()
 
-        print(data)
+        #print(data)
 
     return data
 
