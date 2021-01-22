@@ -38,6 +38,8 @@ def draw_stone_background():
             else:
                 # draws the next row of bricks inbetween the previous bricks
                 pygame.draw.rect(screen, brick_colour, (x-30, y, 56, 26))
+    #test case:
+    # print("Stone background created")
 
 # Draws a small torch
 def draw_torch(x,y):
@@ -62,6 +64,9 @@ def draw_torch(x,y):
     pygame.draw.rect(screen, wood_colour, (x+22, y+20, 6, 15))
     pygame.draw.rect(screen, outer_flame_colour, (x+19, y+8, 12, 12))
     pygame.draw.rect(screen, centre_flame_colour, (x+21, y+12, 8, 8))
+    
+    #test case:
+    # print("torch drawn at", x, y)
 
 # Draws the exit on the screen.
 def draw_exit(x,y):
@@ -83,6 +88,9 @@ def draw_exit(x,y):
     # Draws the exit based on the x and y coordinates.
     pygame.draw.rect(screen, wood_colour, (x, y, 50, 50))
     pygame.draw.rect(screen, black_colour, (x+10, y+10, 30, 40))
+    
+    #test case:
+    # print("exit drawn at", x, y)
 
 # Resets the players locations to the designated locations in the level
 def reset_players(current_level, Players):
@@ -115,8 +123,11 @@ def reset_players(current_level, Players):
                 # If yes, create new x and y coordinates for Player1
                 Players[1].x = x*50
                 Players[1].y = y*50
-
-    # Return finalized Players list
+                
+    #test cases:
+    # print(Players[0].x, Players[0].y)
+    # print(Players[1].x, Players[1].y)
+                
     return Players
 
 # Locates the coordinates of the exit in the level and returns them.
@@ -144,7 +155,7 @@ def get_exit_location(current_level):
             # "E" is the key for exit
             if current_level[y][x] == "E":
                 exit = [x*50, y*50]
-
+    
     # Return the list of exits
     return exit
 
@@ -196,6 +207,9 @@ def render_block_list(list_to_render, R, G, B, height=0):
 
         # Render the block with its RGB colour value.
         block.render((R, G, B))
+        
+        #test cases
+        # print(block, (R, G, B), height)
 
 
 # Renders the choosen level on the screen.
@@ -286,12 +300,24 @@ def render_level(level, level_num):
     render_block_list(red_only, 200, 50, 50, 25)
     render_block_list(blue_only, 50, 50, 200, 25)
 
-    #for plate in pressure_plates:
-    #    plate.render()
-
     # Button(text, type, click, can_hover, x, y, w, h, colour, bg, font)
     btn_score = Button(f"Lvl:{level_num}", "", "", False, 440, 5, 120, 40, (200, 200, 200), (50, 50, 50), 34)
     btn_score.render()
+    
+    #test cases
+    # print(obstacles)
+    # print(red_only)
+    # print(blue_only)
+    # print(pressure_plates)
+    # print(doors)
+    # print(exits)
 
     # Return the block lists.
     return obstacles, red_only, blue_only, pressure_plates, doors, exits
+    
+    
+# test cases:
+#
+#test_exit = get_exit_location(current_level)
+#print(current_level)
+#modify_level(".", "u")
